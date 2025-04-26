@@ -3,19 +3,29 @@ import { useNavigate, useParams } from "react-router";
 import { apiUrl } from "../assets/variables";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "../components/Loader";
+import { useEffect } from "react";
 
 export const DetalleCotizacion = () => {
   const { id } = useParams();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { data: cotizacion = {}, isLoading } = useQuery({
     queryKey: ["cotizacion", id],
     queryFn: async () => {
-      const { data } = await axios.get(`${apiUrl}/invoices/${id}`, {
+      const { data } = await axios.get(`${apiUrl}/admin/invoices/${id}`, {
         params: { id },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
       return data;
     },
   });
+
+  console.log(cotizacion);
 
   const navigate = useNavigate();
 
@@ -38,7 +48,7 @@ export const DetalleCotizacion = () => {
                   <strong>ID:</strong> {cotizacion.id}
                 </p>
                 <p className="text-gray-700">
-                  <strong>Estado:</strong> {cotizacion.status}
+                  <strong>Estado:</strong> {cotizacion.statusR.name}
                 </p>
                 <p className="text-gray-700">
                   <strong>Fecha de Creación:</strong>{" "}
@@ -52,25 +62,33 @@ export const DetalleCotizacion = () => {
               <h2 className="text-xl font-semibold text-gray-700 mb-2">
                 Información del Usuario
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg flex gap-20">
-                <div>
-                  <p className="text-gray-700">
-                    <strong>Nombre:</strong>{" "}
-                    {cotizacion.user?.name || "No disponible"}
-                  </p>
-                  <p className="text-gray-700">
-                    <strong>Email:</strong>{" "}
-                    {cotizacion.user?.email || "No disponible"}
-                  </p>
+              <div className="bg-gray-100 p-4 rounded-lg ">
+                <div className="flex gap-20">
+                  <div>
+                    <p className="text-gray-700">
+                      <strong>Nombre:</strong>{" "}
+                      {cotizacion.user?.name || "No disponible"}
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Email:</strong>{" "}
+                      {cotizacion.user?.email || "No disponible"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-700">
+                      <strong>Teléfono:</strong>{" "}
+                      {cotizacion.user?.phone || "No registrado"}
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Empresa:</strong>{" "}
+                      {cotizacion.user?.company || "No registrada"}
+                    </p>
+                  </div>
                 </div>
                 <div>
                   <p className="text-gray-700">
-                    <strong>Teléfono:</strong>{" "}
-                    {cotizacion.user?.phone || "No registrado"}
-                  </p>
-                  <p className="text-gray-700">
-                    <strong>Empresa:</strong>{" "}
-                    {cotizacion.user?.company || "No registrada"}
+                    <strong>Mensaje:</strong>{" "}
+                    {cotizacion?.message || "Sin mensaje."}
                   </p>
                 </div>
               </div>
@@ -89,7 +107,7 @@ export const DetalleCotizacion = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {cotizacion.invoiceDetails.map((detail: any) => (
+                    {cotizacion.invoiceDetails?.map((detail: any) => (
                       <tr key={detail.id} className="border-t border-gray-200">
                         <td className="px-4 py-2">{detail.id}</td>
                         <td className="px-4 py-2">{detail.name}</td>
@@ -105,7 +123,7 @@ export const DetalleCotizacion = () => {
             <img src="/icons/left-arrow.svg" width={15} height={15} />
             <button
               className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/cotizaciones")}
             >
               Volver
             </button>

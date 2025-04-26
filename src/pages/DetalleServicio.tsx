@@ -4,13 +4,13 @@ import { useNavigate, useParams } from "react-router";
 import { apiUrl } from "../assets/variables";
 import { Loader } from "../components/Loader";
 
-export const DetalleContacto = () => {
+export const DetalleServicio = () => {
   const { id } = useParams();
 
   const { data: contacto = {}, isLoading } = useQuery({
-    queryKey: ["contacto", id],
+    queryKey: ["servicio", id],
     queryFn: async () => {
-      const { data } = await axios.get(`${apiUrl}/admin/contacts/${id}`, {
+      const { data } = await axios.get(`${apiUrl}/contacts/${id}`, {
         params: { id },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

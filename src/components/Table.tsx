@@ -1,88 +1,38 @@
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useNavigate } from "react-router";
 
-interface TableProps<TData> {
-  datosTabla: TData[];
-  columns: {
-    header: string;
-    accessorKey: string;
-    cell?: (info: { getValue: () => any }) => any;
-  }[];
-  title: string;
-}
+type Columns = {
+  header: string;
+  accessorKey: string;
+  cell?: (info: { getValue: () => any }) => any;
+};
 
-export const Table = <TData,>({
-  datosTabla,
-  columns,
-  title,
-}: TableProps<TData>) => {
-  const [globalFilter, setGlobalFilter] = useState<string | undefined>("");
+type TableProps = {
+  datosTabla: any[];
+  columns: Columns[];
+  onClick?: () => void;
+  hasButton?: boolean;
+  detailsRoute: string;
+};
+
+export const Table = ({ datosTabla, columns, detailsRoute }: TableProps) => {
+  const navigate = useNavigate();
 
   const table = useReactTable({
     data: datosTabla,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      globalFilter,
-    },
-    onGlobalFilterChange: setGlobalFilter,
   });
 
-  const totalPages = table.getPageCount();
-  const currentPage = table.getState().pagination.pageIndex + 1;
-
   return (
-    <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-medium ml-5">{title}</h1>
-        </div>
-        <div className="flex gap-5 items-center">
-          <div className="border-2 border-gray-200 rounded-lg flex gap-1 items-center">
-            <img
-              src="/icons/search.svg"
-              height={20}
-              width={20}
-              className="ml-2"
-            />
-            <input
-              type="text"
-              placeholder="Buscar..."
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="p-2 rounded-lg outline-none"
-            />
-          </div>
-          <div className="border-2 border-gray-200 rounded-lg p-2 flex gap-5 items-center">
-            <p>Mostrar</p>
-            <select
-              className="select-registros"
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 25, 50, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize}
-                </option>
-              ))}
-            </select>
-            <p>registros</p>
-          </div>
-        </div>
-      </div>
-      <table className="w-full mt-8">
+    <>
+      <table className="w-full">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -90,7 +40,7 @@ export const Table = <TData,>({
                 <th
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
-                  className="p-6 text-left text-gray-500 font-medium text-lg"
+                  className="p-6 text-left text-gray-500 font-bold text-md bg-gray-100 uppercase"
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -108,9 +58,16 @@ export const Table = <TData,>({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <tr
+              key={row.id}
+              onClick={() => navigate(`/${detailsRoute}/${row.original.id}`)}
+              className="cursor-pointer hover:bg-gray-100/50 transition-all"
+            >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-4 border-b border-gray-200">
+                <td
+                  key={cell.id}
+                  className="py-2 px-6 border-b border-gray-200"
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -123,29 +80,6 @@ export const Table = <TData,>({
           <p>No se encontraron resultados...</p>
         </div>
       )}
-      <div className="flex gap-5 items-center justify-end mt-8">
-        <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">
-          <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="cursor-pointer"
-            >
-              <img src="/icons/left-arrow.svg" height={20} width={20} />
-            </button>
-          </div>
-          <div>
-            <p>
-              Página {currentPage} de {totalPages}
-            </p>
-          </div>
-          <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
-            <button onClick={() => table.nextPage()} className="cursor-pointer">
-              <img src="/icons/right-arrow-black.svg" height={20} width={20} />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
