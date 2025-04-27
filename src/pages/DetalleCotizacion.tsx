@@ -9,44 +9,6 @@ import { useModalStates } from "../hooks/useModalStates";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
 
-const mockHistory = [
-  {
-    id: 1,
-    state: "PENDIENTE",
-    comment: "Cotización creada.",
-    userName: "Juan Pérez",
-    date: "2023-04-01T10:30:00Z",
-  },
-  {
-    id: 2,
-    state: "ENVIADA",
-    comment: "Se envió al cliente para revisión.",
-    userName: "María López",
-    date: "2023-04-02T15:45:00Z",
-  },
-  {
-    id: 3,
-    state: "SEGUIMIENTO",
-    comment: "Cliente solicitó más información.",
-    userName: "Carlos Gómez",
-    date: "2023-04-03T09:20:00Z",
-  },
-  {
-    id: 4,
-    state: "VENDIDO",
-    comment: "El cliente aceptó la cotización.",
-    userName: "Ana Martínez",
-    date: "2023-04-04T14:10:00Z",
-  },
-  {
-    id: 5,
-    state: "PERDIDA",
-    comment: "El cliente decidió no continuar.",
-    userName: "Luis Rodríguez",
-    date: "2023-04-05T11:00:00Z",
-  },
-];
-
 export const DetalleCotizacion = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
   const [initialState, handleState] = useModalStates({
@@ -77,7 +39,7 @@ export const DetalleCotizacion = () => {
     },
   });
 
-  // console.log(cotizacion);
+  console.log(cotizacion.invoiceEvents);
 
   const navigate = useNavigate();
 
@@ -248,18 +210,18 @@ export const DetalleCotizacion = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {mockHistory.map((change: any) => (
-                      <tr key={change.id} className="border-t border-gray-200">
-                        <td className="px-4 py-2">{change.state}</td>
+                    {cotizacion?.invoiceEvents.map((event: any) => (
+                      <tr key={event.id} className="border-t border-gray-200">
+                        <td className="px-4 py-2">{event.status}</td>
                         <td className="px-4 py-2">
-                          {change.comment || "Sin comentario"}
+                          {event.comment || "Sin comentario"}
                         </td>
                         <td className="px-4 py-2">
-                          {change.userName || "Desconocido"}
+                          {event.adminUser?.name || "Cliente"}
                         </td>
                         <td className="px-4 py-2">
-                          {change.date
-                            ? new Date(change.date).toLocaleDateString(
+                          {event.createdAt
+                            ? new Date(event.createdAt).toLocaleDateString(
                                 "es-ES",
                                 {
                                   day: "2-digit",
