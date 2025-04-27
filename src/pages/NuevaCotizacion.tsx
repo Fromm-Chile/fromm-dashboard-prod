@@ -137,114 +137,110 @@ export const NuevaCotizacion = () => {
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          <div className="m-auto max-w-[1150px] min-h-[600px] bg-white shadow-lg rounded-lg py-6 px-36 my-10">
-            <h1 className="text-center text-2xl my-10 uppercase font-medium text-gray-700">
-              Crear una nueva cotización
-            </h1>
-            <p className="mb-10">
-              Para generar una nueva cotización deberás buscar al usuario en la
-              base de datos usando su <strong>correo electrónico</strong>.
-            </p>
-            <Select
-              options={selectOptions}
-              onInputChange={handleInputChange}
-              onChange={handleChange}
-              isLoading={isFetching}
-              placeholder="Buscar usuario por correo..."
-              noOptionsMessage={() => (
-                <div
-                  onClick={() => {
-                    console.log("first");
-                    reset({
-                      name: "",
-                      email: "",
-                      phone: "",
-                      company: "",
-                      message: "",
-                    }); // Reset the form
-                    setSelectedUser(null); // Clear the selected user
-                    setInput(""); // Clear the search input
-                  }}
-                  style={{
-                    cursor: "pointer",
-                    textAlign: "center",
-                  }}
-                >
-                  {debouncedSearch.length < 3
-                    ? "Escribe al menos 3 caracteres"
-                    : "No se encontraron resultados. Haz clic aquí para limpiar el formulario."}
-                </div>
-              )}
-              loadingMessage={() => "Cargando..."}
+      {isLoading && <Loader />}
+      <div className="m-auto max-w-[1150px] min-h-[600px] bg-white shadow-lg rounded-lg py-6 px-36 my-10">
+        <h1 className="text-center text-2xl my-10 uppercase font-medium text-gray-700">
+          Crear una nueva cotización
+        </h1>
+        <p className="mb-10">
+          Para generar una nueva cotización deberás buscar al usuario en la base
+          de datos usando su <strong>correo electrónico</strong>.
+        </p>
+        <Select
+          options={selectOptions}
+          onInputChange={handleInputChange}
+          onChange={handleChange}
+          isLoading={isFetching}
+          placeholder="Buscar usuario por correo..."
+          isClearable
+          noOptionsMessage={() => (
+            <div
+              onClick={() => {
+                console.log("first");
+                reset({
+                  name: "",
+                  email: "",
+                  phone: "",
+                  company: "",
+                  message: "",
+                }); // Reset the form
+                setSelectedUser(null); // Clear the selected user
+                setInput(""); // Clear the search input
+              }}
+              style={{
+                cursor: "pointer",
+                textAlign: "center",
+              }}
+            >
+              {debouncedSearch.length < 3
+                ? "Escribe al menos 3 caracteres"
+                : "No se encontraron resultados. Haz clic aquí para limpiar el formulario."}
+            </div>
+          )}
+          loadingMessage={() => "Cargando..."}
+        />
+        <div className="md:grid md:grid-cols-1 md:gap-0 my-10 mb-14">
+          <div className="flex w-full gap-5 mb-5">
+            <InputController
+              control={control}
+              name="name"
+              placeholder="Nombre*"
+              error={errors.name?.message}
+              className="w-[50%]"
+              disabled={selectedUser ? true : false}
             />
-            <div className="md:grid md:grid-cols-1 md:gap-0 my-10 mb-14">
-              <div className="flex w-full gap-5 mb-5">
-                <InputController
-                  control={control}
-                  name="name"
-                  placeholder="Nombre*"
-                  error={errors.name?.message}
-                  className="w-[50%]"
-                  disabled={selectedUser ? true : false}
-                />
-                <InputController
-                  control={control}
-                  name="email"
-                  placeholder="Correo*"
-                  error={errors.email?.message}
-                  className="w-[50%]"
-                  disabled={selectedUser ? true : false}
-                />
-              </div>
-              <div className="flex w-full gap-5 mb-5 flex-1/2">
-                <InputController
-                  control={control}
-                  name="phone"
-                  placeholder="Teléfono"
-                  className="w-[50%]"
-                  disabled={selectedUser ? true : false}
-                />
-                <InputController
-                  control={control}
-                  name="company"
-                  placeholder="Empresa*"
-                  error={errors.name?.message}
-                  className="w-[50%]"
-                  disabled={selectedUser ? true : false}
-                />
-              </div>
-              <TextareaController
-                control={control}
-                name="message"
-                placeholder="Detalles cotización*"
-                error={errors.message?.message}
-              />
-              <div className="flex justify-center">
-                <Button
-                  className="border border-black rounded-lg p-2 text-textGray font-bold uppercase cursor-pointer"
-                  onClick={handleSubmit(() => setModal(true))}
-                  link=""
-                >
-                  CREAR COTIZACIÓN
-                </Button>
-              </div>
-            </div>
-            <div className="mt-10 flex items-center gap-2 text-lg">
-              <img src="/icons/left-arrow.svg" width={15} height={15} />
-              <button
-                className="cursor-pointer hover:text-red-600"
-                onClick={() => navigate("/cotizaciones")}
-              >
-                Volver
-              </button>
-            </div>
+            <InputController
+              control={control}
+              name="email"
+              placeholder="Correo*"
+              error={errors.email?.message}
+              className="w-[50%]"
+              disabled={selectedUser ? true : false}
+            />
           </div>
-        </>
-      )}
+          <div className="flex w-full gap-5 mb-5 flex-1/2">
+            <InputController
+              control={control}
+              name="phone"
+              placeholder="Teléfono"
+              className="w-[50%]"
+              disabled={selectedUser ? true : false}
+            />
+            <InputController
+              control={control}
+              name="company"
+              placeholder="Empresa*"
+              error={errors.name?.message}
+              className="w-[50%]"
+              disabled={selectedUser ? true : false}
+            />
+          </div>
+          <TextareaController
+            control={control}
+            name="message"
+            placeholder="Detalles cotización*"
+            error={errors.message?.message}
+          />
+          <div className="flex justify-center">
+            <Button
+              className="border border-black rounded-lg p-2 text-textGray font-bold uppercase cursor-pointer"
+              onClick={handleSubmit(() => setModal(true))}
+              link=""
+            >
+              CREAR COTIZACIÓN
+            </Button>
+          </div>
+        </div>
+        <div className="mt-10 flex items-center gap-2 text-lg">
+          <img src="/icons/left-arrow.svg" width={15} height={15} />
+          <button
+            className="cursor-pointer hover:text-red-600"
+            onClick={() => navigate("/cotizaciones")}
+          >
+            Volver
+          </button>
+        </div>
+      </div>
       <ModalConfirmacion
         text="Estás segura de crear una nueva cotización?"
         isOpen={modal}

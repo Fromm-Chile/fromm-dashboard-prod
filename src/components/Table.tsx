@@ -18,9 +18,15 @@ type TableProps = {
   onClick?: () => void;
   hasButton?: boolean;
   detailsRoute: string;
+  handlerColumnFilter?: () => void;
 };
 
-export const Table = ({ datosTabla, columns, detailsRoute }: TableProps) => {
+export const Table = ({
+  datosTabla,
+  columns,
+  detailsRoute,
+  handlerColumnFilter,
+}: TableProps) => {
   const navigate = useNavigate();
 
   const table = useReactTable({
@@ -39,18 +45,13 @@ export const Table = ({ datosTabla, columns, detailsRoute }: TableProps) => {
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
+                  onClick={handlerColumnFilter}
                   className="p-6 text-left text-gray-500 font-bold text-md bg-gray-100 uppercase"
                 >
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
                   )}
-                  {
-                    { asc: "⬆️", desc: "⬇️" }[
-                      (header.column.getIsSorted() as "asc" | "desc") ?? null
-                    ]
-                  }
                 </th>
               ))}
             </tr>

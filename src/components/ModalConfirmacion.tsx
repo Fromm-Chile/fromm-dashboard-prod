@@ -1,12 +1,14 @@
+import { JSX, PropsWithChildren } from "react";
 import { Loader } from "./Loader";
 
 type ModalConfirmacionProps = {
-  text: string;
+  text: string | JSX.Element;
   buttonText?: string;
   onSubmit: (data: any) => Promise<void>;
   onCancel: () => void;
   isOpen: boolean;
-  isLoading: boolean;
+  isLoading?: boolean;
+  titleComment?: string;
 };
 
 export const ModalConfirmacion = ({
@@ -16,7 +18,9 @@ export const ModalConfirmacion = ({
   onCancel,
   isOpen,
   isLoading,
-}: ModalConfirmacionProps) => {
+  children,
+  titleComment = "Comentario",
+}: PropsWithChildren<ModalConfirmacionProps>) => {
   return (
     <>
       {isLoading ? (
@@ -24,11 +28,18 @@ export const ModalConfirmacion = ({
       ) : (
         <>
           {isOpen && (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black/30 bg-opacity-50">
-              <div className="flex flex-col justify-center h-[274px] w-[510px] overflow-y-auto overflow-x-hidden">
-                <div className="bg-white rounded-lg h-full w-full border-2 border-red-900 flex flex-col items-center justify-center">
-                  <img src="/icons/alert.svg" width={100} className="mb-5" />
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black/30 bg-opacity-50 text-gray-600">
+              <div className="flex flex-col justify-center h-auto w-[510px] overflow-y-auto overflow-x-hidden">
+                <div className="bg-white rounded-lg h-full w-full border-2 border-red-900 flex flex-col items-center justify-center min-h-[274px] py-5">
+                  <img src="/icons/alert.svg" width={70} className="mb-5" />
                   <p>{text}</p>
+                  {children}
+                  <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
+                    <label htmlFor="" className="self-start mb-1">
+                      {titleComment}
+                    </label>
+                    <textarea className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500" />
+                  </div>
                   <div className="flex gap-5">
                     <button
                       className="bg-red-500 text-white rounded-lg px-4 py-2 mt-4 cursor-pointer hover:bg-red-600"

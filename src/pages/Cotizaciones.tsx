@@ -15,6 +15,7 @@ export const Cotizaciones = () => {
   const [filter, setFilter] = useState<string | null>(null);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
+  const [columnOrder, setColumnOrder] = useState(false);
 
   const navigate = useNavigate();
   const { countryCode } = useUserStore();
@@ -40,7 +41,14 @@ export const Cotizaciones = () => {
 
   const { data: { cotizaciones = [], totalPages = 1 } = {}, isLoading } =
     useQuery({
-      queryKey: ["cotizaciones", debouncedSearch, filter, limit, page],
+      queryKey: [
+        "cotizaciones",
+        debouncedSearch,
+        filter,
+        limit,
+        page,
+        columnOrder,
+      ],
       queryFn: async () => {
         try {
           const { data } = await axios.get(`${apiUrl}/admin/invoices`, {
@@ -50,6 +58,7 @@ export const Cotizaciones = () => {
               status: filter,
               limit: Number(limit),
               page: page - 1,
+              idOrder: columnOrder ? "asc" : "desc",
             },
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -67,8 +76,8 @@ export const Cotizaciones = () => {
       },
     });
 
-  const { data: { totalInvoices, pendingInvoices, soldInvoices } = {} } =
-    useQuery({
+  const { data: { totalCount, pendingInvoices, soldInvoices } = {} } = useQuery(
+    {
       queryKey: ["datos", countryCode],
       queryFn: async () => {
         try {
@@ -91,7 +100,8 @@ export const Cotizaciones = () => {
           return [];
         }
       },
-    });
+    }
+  );
 
   const opcionesSelect = Array.from(
     new Set(cotizaciones.map((cotizacion: any) => cotizacion.statusR.name))
@@ -160,112 +170,112 @@ export const Cotizaciones = () => {
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div className="pb-10">
-          <Summary
-            total={totalInvoices || 0}
-            pendiente={pendingInvoices || 0}
-            enviada={soldInvoices || 0}
-          />
-          <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
-            <div className="mb-6 flex justify-between items-center">
-              <h1 className="text-2xl font-medium text-center">Cotizaciones</h1>
-              <button
-                className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
-                onClick={() => navigate("/nueva-cotizacion")}
+      {isLoading && <Loader />}
+      <div className="pb-10">
+        <Summary
+          total={totalCount || 0}
+          pendiente={pendingInvoices || 0}
+          enviada={soldInvoices || 0}
+        />
+        <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
+          <div className="mb-6 flex justify-between items-center">
+            <h1 className="text-2xl font-medium text-center">Cotizaciones</h1>
+            <button
+              className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
+              onClick={() => navigate("/nueva-cotizacion")}
+            >
+              CREAR COTIZACIÓN
+            </button>
+          </div>
+          <div className="flex items-center justify-around mb-4">
+            <div className="border-2 border-gray-200 rounded-lg flex gap-1 items-center w-[450px]">
+              <img
+                src="/icons/search.svg"
+                height={20}
+                width={20}
+                className="ml-2"
+              />
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="p-2 rounded-lg outline-none w-[450px]"
+              />
+            </div>
+            <div className="flex justify-end pb-6">
+              <SelectTable
+                label="Filtrar por estatus"
+                selectOptions={opcionesSelect}
+                onChange={(e) => {
+                  setFilter(e.target.value);
+                }}
+                value={filter || ""}
+              />
+            </div>
+            <div className="border-2 border-gray-200 rounded-lg p-2 flex gap-5 items-center">
+              <p>Mostrar</p>
+              <select
+                className="select-registros"
+                value={limit || ""}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                }}
               >
-                CREAR COTIZACIÓN
-              </button>
+                {[10, 25, 50, 100].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    {pageSize}
+                  </option>
+                ))}
+              </select>
+              <p>registros</p>
             </div>
-            <div className="flex items-center justify-around mb-4">
-              <div className="border-2 border-gray-200 rounded-lg flex gap-1 items-center w-[450px]">
-                <img
-                  src="/icons/search.svg"
-                  height={20}
-                  width={20}
-                  className="ml-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Buscar..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="p-2 rounded-lg outline-none w-[450px]"
-                />
-              </div>
-              <div className="flex justify-end pb-6">
-                <SelectTable
-                  label="Filtrar por estatus"
-                  selectOptions={opcionesSelect}
-                  onChange={(e) => {
-                    setFilter(e.target.value);
-                  }}
-                  value={filter || ""}
-                />
-              </div>
-              <div className="border-2 border-gray-200 rounded-lg p-2 flex gap-5 items-center">
-                <p>Mostrar</p>
-                <select
-                  className="select-registros"
-                  value={limit || ""}
-                  onChange={(e) => {
-                    setLimit(Number(e.target.value));
-                  }}
+          </div>
+          <Table
+            datosTabla={cotizaciones}
+            columns={columns}
+            hasButton
+            detailsRoute="cotizaciones"
+            handlerColumnFilter={() => {
+              setColumnOrder((prev) => !prev);
+            }}
+          />
+          <div className="flex gap-5 items-center justify-end mt-8">
+            <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">
+              <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
+                <button
+                  onClick={() =>
+                    setPage((prev) => (prev > 0 ? prev - 1 : prev))
+                  }
+                  disabled={page === 1}
+                  className="cursor-pointer"
                 >
-                  {[10, 25, 50, 100].map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                      {pageSize}
-                    </option>
-                  ))}
-                </select>
-                <p>registros</p>
+                  <img src="/icons/left-arrow.svg" height={20} width={20} />
+                </button>
               </div>
-            </div>
-            <Table
-              datosTabla={cotizaciones}
-              columns={columns}
-              hasButton
-              detailsRoute="cotizaciones"
-            />
-            <div className="flex gap-5 items-center justify-end mt-8">
-              <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">
-                <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
-                  <button
-                    onClick={() =>
-                      setPage((prev) => (prev > 0 ? prev - 1 : prev))
-                    }
-                    // disabled={!table.getCanPreviousPage()}
-                    className="cursor-pointer"
-                  >
-                    <img src="/icons/left-arrow.svg" height={20} width={20} />
-                  </button>
-                </div>
-                <div>
-                  <p>
-                    Página {page} de {totalPages}
-                  </p>
-                </div>
-                <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
-                  <button
-                    onClick={() =>
-                      setPage((prev) => (prev < totalPages ? prev + 1 : prev))
-                    }
-                    className="cursor-pointer"
-                  >
-                    <img
-                      src="/icons/right-arrow-black.svg"
-                      height={20}
-                      width={20}
-                    />
-                  </button>
-                </div>
+              <div>
+                <p>
+                  Página {page} de {totalPages}
+                </p>
+              </div>
+              <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
+                <button
+                  onClick={() =>
+                    setPage((prev) => (prev < totalPages ? prev + 1 : prev))
+                  }
+                  className="cursor-pointer"
+                >
+                  <img
+                    src="/icons/right-arrow-black.svg"
+                    height={20}
+                    width={20}
+                  />
+                </button>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };

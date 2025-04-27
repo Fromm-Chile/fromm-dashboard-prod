@@ -12,19 +12,21 @@ import { DetalleServicio } from "./pages/DetalleServicio";
 import { NuevaCotizacion } from "./pages/NuevaCotizacion";
 import { HistorialCliente } from "./pages/HistorialCliente";
 import ScrollToTop from "./components/ScrollToTop";
+import { Inicio } from "./pages/Inicio";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <>
+        <ScrollToTop />
         <ProtectedRoute>
-          <ScrollToTop />
           <Layout />
         </ProtectedRoute>
       </>
     ),
     children: [
+      { path: "/inicio", element: <Inicio /> },
       { path: "/cotizaciones", element: <Cotizaciones /> },
       { path: "/cotizaciones/:id", element: <DetalleCotizacion /> },
       { path: "/contactos", element: <Contactos /> },

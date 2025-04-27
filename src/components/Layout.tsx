@@ -15,17 +15,18 @@ type NavMenu = {
 const navMenu: NavMenu[] = [
   {
     id: 1,
+    name: "Inicio",
+    icon: "/icons/cash.svg",
+    iconWhite: "/icons/cashW.svg",
+    link: "/inicio",
+  },
+  {
+    id: 2,
     name: "Cotizaciones",
     icon: "/icons/cash.svg",
     iconWhite: "/icons/cashW.svg",
     link: "/cotizaciones",
   },
-  // {
-  //   id: 2,
-  //   name: "Nueva Cotización",
-  //   icon: "/icons/new.svg",
-  //   link: "/nueva-cotizacion",
-  // },
   {
     id: 3,
     name: "Contactos",
@@ -53,6 +54,10 @@ export const Layout = () => {
   const [open, setOpen] = useState(true);
 
   const { user, reset, setCountryCode, countryCode } = useUserStore();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { roleId, name } = user;
 

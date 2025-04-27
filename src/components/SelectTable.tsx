@@ -12,12 +12,12 @@ export const SelectTable = ({
   value,
 }: SelectTableProps) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col text-gray-600">
       <label htmlFor="filtro">{label}</label>
       <select
         name=""
         id="filtro"
-        className="w-[225px] rounded-md border-2 border-gray-300 p-2 focus-visible:outline-none focus-visible:border-red-500"
+        className="w-[225px] rounded-md border-2 bg-white border-gray-300 p-2 focus-visible:outline-none focus-visible:border-red-500"
         onChange={onChange}
         value={value}
       >
