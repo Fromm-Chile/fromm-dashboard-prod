@@ -16,8 +16,8 @@ const navMenu: NavMenu[] = [
   {
     id: 1,
     name: "Inicio",
-    icon: "/icons/cash.svg",
-    iconWhite: "/icons/cashW.svg",
+    icon: "/icons/chart.svg",
+    iconWhite: "/icons/chartW.svg",
     link: "/inicio",
   },
   {

@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { apiUrl } from "../assets/variables";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router";
-import { Loader } from "../components/Loader";
 import { useUserStore } from "../store/useUserStore";
 import { SelectTable } from "../components/SelectTable";
 import { useEffect, useState } from "react";
@@ -170,7 +169,6 @@ export const Cotizaciones = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
       <div className="pb-10">
         <Summary
           total={totalCount || 0}
@@ -239,6 +237,7 @@ export const Cotizaciones = () => {
             handlerColumnFilter={() => {
               setColumnOrder((prev) => !prev);
             }}
+            isLoading={isLoading}
           />
           <div className="flex gap-5 items-center justify-end mt-8">
             <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">

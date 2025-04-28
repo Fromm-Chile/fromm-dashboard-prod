@@ -9,6 +9,7 @@ type ModalConfirmacionProps = {
   isOpen: boolean;
   isLoading?: boolean;
   titleComment?: string;
+  hasComment?: boolean;
 };
 
 export const ModalConfirmacion = ({
@@ -20,6 +21,7 @@ export const ModalConfirmacion = ({
   isLoading,
   children,
   titleComment = "Comentario",
+  hasComment = true,
 }: PropsWithChildren<ModalConfirmacionProps>) => {
   return (
     <>
@@ -34,12 +36,14 @@ export const ModalConfirmacion = ({
                   <img src="/icons/alert.svg" width={70} className="mb-5" />
                   <p>{text}</p>
                   {children}
-                  <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
-                    <label htmlFor="" className="self-start mb-1">
-                      {titleComment}
-                    </label>
-                    <textarea className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500" />
-                  </div>
+                  {hasComment && (
+                    <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
+                      <label htmlFor="" className="self-start mb-1">
+                        {titleComment}
+                      </label>
+                      <textarea className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500" />
+                    </div>
+                  )}
                   <div className="flex gap-5">
                     <button
                       className="bg-red-500 text-white rounded-lg px-4 py-2 mt-4 cursor-pointer hover:bg-red-600"

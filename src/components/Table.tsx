@@ -5,6 +5,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useNavigate } from "react-router";
+import { Loader } from "./Loader";
 
 type Columns = {
   header: string;
@@ -19,6 +20,7 @@ type TableProps = {
   hasButton?: boolean;
   detailsRoute: string;
   handlerColumnFilter?: () => void;
+  isLoading?: boolean;
 };
 
 export const Table = ({
@@ -26,6 +28,7 @@ export const Table = ({
   columns,
   detailsRoute,
   handlerColumnFilter,
+  isLoading,
 }: TableProps) => {
   const navigate = useNavigate();
 
@@ -37,8 +40,9 @@ export const Table = ({
   });
 
   return (
-    <>
-      <table className="w-full">
+    <div className="relative">
+      {isLoading && <Loader />}
+      <table className="w-full relative">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -81,6 +85,6 @@ export const Table = ({
           <p>No se encontraron resultados...</p>
         </div>
       )}
-    </>
+    </div>
   );
 };

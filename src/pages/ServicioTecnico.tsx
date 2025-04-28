@@ -3,7 +3,6 @@ import axios from "axios";
 import { apiUrl } from "../assets/variables";
 import { Table } from "../components/Table";
 import { Summary } from "../components/Summary";
-import { Loader } from "../components/Loader";
 // import { useNavigate } from "react-router";
 import { useUserStore } from "../store/useUserStore";
 import { SelectTable } from "../components/SelectTable";
@@ -84,10 +83,9 @@ export const ServicioTecnico = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
       <div className="pb-10">
         <Summary
-          total={servicios.length}
+          total={servicios.length || 0}
           pendiente={0}
           enviada={0}
           tituloTotal="Mensajes recibidos"
@@ -148,6 +146,7 @@ export const ServicioTecnico = () => {
             datosTabla={servicios}
             columns={columns}
             detailsRoute="servicios"
+            isLoading={isLoading}
           />
           <div className="flex gap-5 items-center justify-end mt-8">
             <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">

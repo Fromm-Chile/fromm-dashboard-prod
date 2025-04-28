@@ -28,10 +28,19 @@ export const DetalleContacto = () => {
         <Loader />
       ) : (
         <>
+          <div className="mt-5 flex items-center gap-2 text-lg pb2">
+            <img src="/icons/left-arrow.svg" width={15} height={15} />
+            <button
+              className="cursor-pointer hover:text-red-600"
+              onClick={() => navigate("/contactos")}
+            >
+              Volver
+            </button>
+          </div>
+          <h1 className="text-3xl font-bold text-red-500 pb-4 mt-2 mb-4">
+            Detalle del Contacto
+          </h1>
           <div className="w-full max-w-[1150px] mx-auto bg-white shadow-lg rounded-lg p-6">
-            <h1 className="text-3xl font-bold text-gray-800 border-b pb-4 mb-6">
-              Detalle de Contacto
-            </h1>
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-gray-700 mb-2">
                 Información del Contacto
@@ -95,15 +104,6 @@ export const DetalleContacto = () => {
                 </p>
               </div>
             </div>
-          </div>
-          <div className="mt-10 flex items-center gap-2 text-lg pb-10">
-            <img src="/icons/left-arrow.svg" width={15} height={15} />
-            <button
-              className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate("/contactos")}
-            >
-              Volver
-            </button>
           </div>
         </>
       )}

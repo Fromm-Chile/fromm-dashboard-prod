@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { apiUrl } from "../assets/variables";
 import { Table } from "../components/Table";
-import { Loader } from "../components/Loader";
 import { useUserStore } from "../store/useUserStore";
 
 export const Clientes = () => {
@@ -60,7 +59,6 @@ export const Clientes = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
       <div className="pb-10">
         <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
           <div className="mb-6 flex justify-between items-center">
@@ -105,6 +103,7 @@ export const Clientes = () => {
             datosTabla={clientes}
             columns={columns}
             detailsRoute="clientes"
+            isLoading={isLoading}
           />
           <div className="flex gap-5 items-center justify-end mt-8">
             <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">

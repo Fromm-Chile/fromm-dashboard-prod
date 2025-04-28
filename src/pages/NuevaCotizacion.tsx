@@ -247,6 +247,7 @@ export const NuevaCotizacion = () => {
         onSubmit={handleSubmit(onSubmit)}
         onCancel={() => setModal(false)}
         isLoading={isLoading}
+        hasComment={false}
       />
     </>
   );

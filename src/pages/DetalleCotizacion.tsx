@@ -54,7 +54,16 @@ export const DetalleCotizacion = () => {
         <Loader />
       ) : (
         <>
-          <h1 className="text-3xl font-bold text-red-500 pb-4 mt-12 mb-4">
+          <div className="mt-5 flex items-center gap-2 text-lg">
+            <img src="/icons/left-arrow.svg" width={15} height={15} />
+            <button
+              className="cursor-pointer hover:text-red-600"
+              onClick={() => navigate("/cotizaciones")}
+            >
+              Volver
+            </button>
+          </div>
+          <h1 className="text-3xl font-bold text-red-500 pb-4 mt-2 mb-4">
             Detalle de Cotización
           </h1>
           <div className="w-full max-w-[1150px] mx-auto bg-white shadow-lg rounded-lg p-6">
@@ -237,15 +246,6 @@ export const DetalleCotizacion = () => {
                 </table>
               </div>
             </div>
-          </div>
-          <div className="mt-10 flex items-center gap-2 text-lg">
-            <img src="/icons/left-arrow.svg" width={15} height={15} />
-            <button
-              className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate("/cotizaciones")}
-            >
-              Volver
-            </button>
           </div>
         </>
       )}

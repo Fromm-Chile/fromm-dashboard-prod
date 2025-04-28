@@ -52,7 +52,7 @@ export const LogIn = () => {
         localStorage.setItem("accessToken", data.access_token);
         setUser(data);
         login();
-        navigate("/cotizaciones");
+        navigate("/inicio");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

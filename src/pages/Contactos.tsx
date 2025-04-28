@@ -1,30 +1,120 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { apiUrl } from "../assets/variables";
 import { Table } from "../components/Table";
 import { Summary } from "../components/Summary";
-import { Loader } from "../components/Loader";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useUserStore } from "../store/useUserStore";
 import { SelectTable } from "../components/SelectTable";
+import { useEffect, useState } from "react";
+import useDebounce from "../hooks/useDebounce";
 
 export const Contactos = () => {
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<string | null>(null);
+  const [limit, setLimit] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
+  const [columnOrder, setColumnOrder] = useState(false);
   const { countryCode } = useUserStore();
 
-  // const navigate = useNavigate();
+  console.log(filter);
 
-  const { data: contactos = [], isLoading } = useQuery({
-    queryKey: ["contactos"],
-    queryFn: async () => {
-      const { data } = await axios.get(`${apiUrl}/admin/contacts/messages`, {
-        params: { countryCode, contactType: "CONTACT" },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      return data;
-    },
-  });
+  const navigate = useNavigate();
+  const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    setSearch(debouncedSearch);
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    if (filter) {
+      const selectedOption = opcionesSelect.find(
+        (option) => option.value === filter
+      );
+      if (selectedOption) {
+        setFilter(selectedOption.value as string);
+      }
+    } else {
+      setFilter(null);
+    }
+  }, [filter]);
+
+  const { data: { contactos = [], totalPages = 1 } = {}, isLoading } = useQuery(
+    {
+      queryKey: [
+        "contactos",
+        debouncedSearch,
+        filter,
+        limit,
+        page,
+        columnOrder,
+      ],
+      queryFn: async () => {
+        try {
+          const { data } = await axios.get(
+            `${apiUrl}/admin/contacts/messages`,
+            {
+              params: {
+                countryCode,
+                contactType: "CONTACT",
+                name: debouncedSearch,
+                status: filter,
+                limit: Number(limit),
+                page: page - 1,
+                idOrder: columnOrder ? "asc" : "desc",
+              },
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+            }
+          );
+          return data;
+        } catch (error) {
+          if (error instanceof AxiosError && error.status === 401) {
+            navigate("/login");
+          } else {
+            console.error("Unexpected error:", error);
+          }
+          return [];
+        }
+      },
+    }
+  );
+
+  // console.log(contactos);
+  const { data: { totalCount, pendingContacts, invoiceContacts } = {} } =
+    useQuery({
+      queryKey: ["datosContactos", countryCode],
+      queryFn: async () => {
+        try {
+          const { data } = await axios.get(
+            `${apiUrl}/admin/contacts/messages/count`,
+            {
+              params: { countryCode, contactType: "CONTACT" },
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+            }
+          );
+          return data;
+        } catch (error) {
+          if (error instanceof AxiosError && error.status === 401) {
+            navigate("/login");
+          } else {
+            console.error("Unexpected error:", error);
+          }
+          return [];
+        }
+      },
+    });
+
+  const opcionesSelect = Array.from(
+    new Set(contactos.map((cotizacion: any) => cotizacion.status.name))
+  ).map((name) => ({
+    id: name, // Use the name as the id (or generate a unique id if needed)
+    texto: name,
+    value: name,
+  }));
 
   const columns = [
     {
@@ -73,6 +163,8 @@ export const Contactos = () => {
                 ? "bg-green-600"
                 : getValue() === "PERDIDA"
                 ? "bg-red-700"
+                : getValue() === "COTIZADO"
+                ? "bg-red-500"
                 : ""
             }`}
           >
@@ -85,15 +177,14 @@ export const Contactos = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
       <div className="pb-10">
         <Summary
-          total={contactos.length}
-          pendiente={0}
-          enviada={0}
+          total={totalCount || 0}
+          pendiente={pendingContacts || 0}
+          enviada={invoiceContacts || 0}
           tituloTotal="Mensajes recibidos"
           tituloPendiente="Mensajes pendientes"
-          tituloEnviada="Mensajes respondidos"
+          tituloEnviada="Mensajes cotizaciones"
         />
         <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
           <div className="mb-6 flex justify-between items-center">
@@ -110,29 +201,29 @@ export const Contactos = () => {
               <input
                 type="text"
                 placeholder="Buscar..."
-                // value={search}
-                // onChange={(e) => setSearch(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="p-2 rounded-lg outline-none w-[450px]"
               />
             </div>
             <div className="flex justify-end pb-6">
               <SelectTable
                 label="Filtrar por estatus"
-                selectOptions={[]}
+                selectOptions={opcionesSelect}
                 onChange={(e) => {
-                  console.log(e.target.value);
+                  setFilter(e.target.value);
                 }}
-                value={""}
+                value={filter || ""}
               />
             </div>
             <div className="border-2 border-gray-200 rounded-lg p-2 flex gap-5 items-center">
               <p>Mostrar</p>
               <select
                 className="select-registros"
-                // value={limit || ""}
-                // onChange={(e) => {
-                //   setLimit(Number(e.target.value));
-                // }}
+                value={limit || ""}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                }}
               >
                 {[10, 25, 50, 100].map((pageSize) => (
                   <option key={pageSize} value={pageSize}>
@@ -147,28 +238,34 @@ export const Contactos = () => {
             datosTabla={contactos}
             columns={columns}
             detailsRoute="contactos"
+            handlerColumnFilter={() => {
+              setColumnOrder((prev) => !prev);
+            }}
+            isLoading={isLoading}
           />
           <div className="flex gap-5 items-center justify-end mt-8">
             <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">
               <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
                 <button
-                  // onClick={() =>
-                  //   setPage((prev) => (prev > 0 ? prev - 1 : prev))
-                  // }
-                  // disabled={!table.getCanPreviousPage()}
+                  onClick={() =>
+                    setPage((prev) => (prev > 0 ? prev - 1 : prev))
+                  }
+                  disabled={page === 1}
                   className="cursor-pointer"
                 >
                   <img src="/icons/left-arrow.svg" height={20} width={20} />
                 </button>
               </div>
               <div>
-                <p>{/* Página {page} de {totalPages} */}</p>
+                <p>
+                  Página {page} de {totalPages}
+                </p>
               </div>
               <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
                 <button
-                  // onClick={() =>
-                  //   setPage((prev) => (prev < totalPages ? prev + 1 : prev))
-                  // }
+                  onClick={() =>
+                    setPage((prev) => (prev < totalPages ? prev + 1 : prev))
+                  }
                   className="cursor-pointer"
                 >
                   <img
