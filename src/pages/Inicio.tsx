@@ -12,7 +12,7 @@ export const Inicio = () => {
       <div className="flex gap-2 pb-10">
         <div className="bg-white p-4 rounded-2xl">
           <h2 className="text-gray-500 text-center text-2xl">
-            Cantidad de Solitudes
+            Cantidad de Solicitudes
           </h2>
           <Line />
         </div>
