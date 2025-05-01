@@ -17,8 +17,6 @@ export const Contactos = () => {
   const [columnOrder, setColumnOrder] = useState(false);
   const { countryCode } = useUserStore();
 
-  console.log(filter);
-
   const navigate = useNavigate();
   const debouncedSearch = useDebounce(search, 500);
 

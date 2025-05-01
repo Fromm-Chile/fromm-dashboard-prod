@@ -3,8 +3,19 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router";
 import { apiUrl } from "../assets/variables";
 import { Loader } from "../components/Loader";
+import { SelectTable } from "../components/SelectTable";
+import { useModalStates } from "../hooks/useModalStates";
+import { useState } from "react";
+import { ModalConfirmacion } from "../components/ModalConfirmacion";
 
 export const DetalleContacto = () => {
+  const [estatus, setEstatus] = useState<string | null>(null);
+  const [modalLoader, setModalLoader] = useState(false);
+  const [area, setArea] = useState<string>("");
+  const [initialState, handleState] = useModalStates({
+    derivada: false,
+    cotizado: false,
+  });
   const { id } = useParams();
 
   const { data: contacto = {}, isLoading } = useQuery({
@@ -20,7 +31,16 @@ export const DetalleContacto = () => {
     },
   });
 
+  console.log(contacto);
+
   const navigate = useNavigate();
+
+  const handleClick = (value: string) => {
+    console.log(value);
+    handleState(value, true);
+  };
+
+  const handleStatusDerivado = async () => {};
 
   return (
     <>
@@ -45,27 +65,59 @@ export const DetalleContacto = () => {
               <h2 className="text-xl font-semibold text-gray-700 mb-2">
                 Información del Contacto
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg flex justify-between">
-                <p className="text-gray-700">
-                  <strong>ID:</strong> {contacto.id}
-                </p>
-                <div>
-                  <p className="text-gray-700">
-                    <strong>Nombre:</strong> {contacto.name || "No disponible"}
-                  </p>
-                  <p className="text-gray-700">
-                    <strong>Email:</strong> {contacto.email || "No disponible"}
-                  </p>
+              <div className="flex justify-between items-center mb-4 bg-gray-100 p-4 rounded-lg ">
+                <div className="flex gap-5">
+                  <div>
+                    <p className="text-gray-700">
+                      <strong>Contacto:</strong> #{contacto.id}
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Nombre:</strong>{" "}
+                      {contacto.name || "No disponible"}
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Email:</strong>{" "}
+                      {contacto.email || "No disponible"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-700">
+                      <strong>Teléfono:</strong>{" "}
+                      {contacto.phone || "No registrado"}
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Empresa:</strong>{" "}
+                      {contacto.company || "No registrada"}
+                    </p>
+                    <p
+                      className={`p-2 rounded-lg text-center w-fit text-white mt-2 ${
+                        contacto.status.name === "PENDIENTE"
+                          ? "bg-gray-400 "
+                          : contacto.status.name === "COTIZADO"
+                          ? "bg-green-400"
+                          : contacto.status.name === "DERIVADA"
+                          ? "bg-blue-600"
+                          : ""
+                      }`}
+                    >
+                      <strong>{contacto.status.name}</strong>
+                    </p>
+                  </div>
                 </div>
                 <div>
-                  <p className="text-gray-700">
-                    <strong>Teléfono:</strong>{" "}
-                    {contacto.phone || "No registrado"}
-                  </p>
-                  <p className="text-gray-700">
-                    <strong>Empresa:</strong>{" "}
-                    {contacto.company || "No registrada"}
-                  </p>
+                  <SelectTable
+                    selectOptions={[
+                      { value: "cotizado", texto: "COTIZADO" },
+                      { value: "servicio", texto: "SERVICIO" },
+                      { value: "derivada", texto: "DERIVADA" },
+                    ]}
+                    label="Estado del contacto"
+                    onChange={(e) => {
+                      setEstatus(e.target.value);
+                      handleClick(e.target.value);
+                    }}
+                    value={estatus || contacto.status.id}
+                  />
                 </div>
               </div>
             </div>
@@ -105,6 +157,46 @@ export const DetalleContacto = () => {
               </div>
             </div>
           </div>
+          {initialState.derivada && (
+            <ModalConfirmacion
+              isLoading={modalLoader}
+              hasComment={false}
+              setValue={() => {}}
+              isOpen={initialState.derivada}
+              onCancel={() => handleState("derivada", false)}
+              text={
+                <p>
+                  Cambar estado a <strong>DERIVADA</strong>
+                </p>
+              }
+              onSubmit={handleStatusDerivado}
+              titleComment="Comentario (opcional)"
+            >
+              <div className="w-[80%] mx-auto mt-5 mb-2">
+                <SelectTable
+                  label="Selecciona el area"
+                  selectOptions={[
+                    { value: "ventas", texto: "Gerencia Comercial" },
+                    { value: "compras", texto: "Compras" },
+                    { value: "recursos-humanos", texto: "Recursos Humanos" },
+                    { value: "comex", texto: "Comex" },
+                    { value: "logística", texto: "Logística" },
+                    { value: "otro", texto: "Otro" },
+                  ]}
+                  onChange={(e) => setArea(e.target.value)}
+                  value={area || ""}
+                />
+                {area === "otro" && (
+                  <input
+                    type="text"
+                    placeholder="Especifica el área"
+                    className="border border-gray-300 p-2 w-full rounded-md focus-visible:outline-none focus-visible:border-red-500 mt-2"
+                    onChange={(e) => setArea(e.target.value)}
+                  />
+                )}
+              </div>
+            </ModalConfirmacion>
+          )}
         </>
       )}
     </>

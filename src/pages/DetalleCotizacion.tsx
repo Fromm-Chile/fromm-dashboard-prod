@@ -8,9 +8,15 @@ import { SelectTable } from "../components/SelectTable";
 import { useModalStates } from "../hooks/useModalStates";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
+import { formatAsCLP, parseCurrency } from "../assets/helperFunctions";
 
 export const DetalleCotizacion = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [comment, setComment] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [totalAmount, setTotalAmount] = useState<number | null>(null);
+  const [modalLoader, setModalLoader] = useState(false);
   const [initialState, handleState] = useModalStates({
     enviada: false,
     derivada: false,
@@ -26,6 +32,10 @@ export const DetalleCotizacion = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    setError(null);
+  }, [comment]);
+
   const { data: cotizacion = {}, isLoading } = useQuery({
     queryKey: ["cotizacion", id],
     queryFn: async () => {
@@ -39,13 +49,134 @@ export const DetalleCotizacion = () => {
     },
   });
 
-  console.log(cotizacion.invoiceEvents);
-
+  // console.log(cotizacion);
   const navigate = useNavigate();
 
   const handleClick = (value: string) => {
     console.log(value);
     handleState(value, true);
+  };
+
+  const handleStatusEnviada = async () => {
+    if (!file) {
+      setError("Debes adjuntar la cotización para continuar!");
+      return;
+    }
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/invoices/upload`,
+        { file, id, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("enviada", false);
+      navigate("/cotizaciones");
+      setModalLoader(false);
+    }
+  };
+
+  const handleStatusSegumiento = async () => {
+    if (!comment) {
+      setError("El comentario del seguimiento es requerido!");
+      return;
+    }
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/invoices/seguimiento`,
+        { id, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("enviada", false);
+      navigate("/cotizaciones");
+      setModalLoader(false);
+    }
+  };
+
+  const handleStatusVenta = async () => {
+    if (!totalAmount) {
+      setError("El monto de la venta es requerido!");
+      return;
+    }
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/invoices/vendido`,
+        { id, comment, totalAmount },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("vendido", false);
+      navigate("/cotizaciones");
+      setModalLoader(false);
+    }
+  };
+
+  const handleStatusDerivado = async () => {
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/invoices/derivado`,
+        { id, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("derivada", false);
+      navigate("/cotizaciones");
+      setModalLoader(false);
+    }
+  };
+
+  const handleStatusPerdido = async () => {
+    if (!comment) {
+      setError("El motivo de la perdida es requerido!");
+      return;
+    }
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/invoices/perdido`,
+        { id, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("perdida", false);
+      navigate("/cotizaciones");
+      setModalLoader(false);
+    }
   };
 
   return (
@@ -95,7 +226,7 @@ export const DetalleCotizacion = () => {
                         : cotizacion.statusR.name === "SEGUIMIENTO"
                         ? "bg-yellow-500"
                         : cotizacion.statusR.name === "DERIVADA"
-                        ? "bg-green-600"
+                        ? "bg-blue-600"
                         : cotizacion.statusR.name === "PERDIDA"
                         ? "bg-red-700"
                         : ""
@@ -103,6 +234,12 @@ export const DetalleCotizacion = () => {
                   >
                     <strong>{cotizacion.statusR.name}</strong>
                   </p>
+                  {cotizacion.statusR.name === "VENDIDO" && (
+                    <p className="text-gray-700 text-2xl">
+                      <strong>Monto neto de la venta:</strong>{" "}
+                      {formatAsCLP(cotizacion.totalAmount)}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <SelectTable
@@ -126,6 +263,15 @@ export const DetalleCotizacion = () => {
                     }}
                     value={estatus || cotizacion.statusR.id}
                   />
+                  {cotizacion.statusR.name === "PENDIENTE" ||
+                  cotizacion.statusR.name === "DERIVADA" ? null : (
+                    <div className="mt-2 flex gap-2 justify-center text-green-500 font-bold border border-gray-200 bg-white rounded-lg p-2 hover:bg-gray-100 hover:text-green-600">
+                      <a target="_blank" href={cotizacion.invoiceURL}>
+                        VER COTIZACIÓN
+                      </a>
+                      <img src="/icons/clip.svg" width={20} height={20} />
+                    </div>
+                  )}
                   {cotizacion.statusR.name === "SEGUIMIENTO" && (
                     <Button
                       className="w-fit h-[40px] flex items-center justify-center mt-2"
@@ -251,6 +397,8 @@ export const DetalleCotizacion = () => {
       )}
       {initialState.enviada && (
         <ModalConfirmacion
+          isLoading={modalLoader}
+          setValue={setComment}
           isOpen={initialState.enviada}
           onCancel={() => handleState("enviada", false)}
           text={
@@ -258,42 +406,68 @@ export const DetalleCotizacion = () => {
               Cambar estado a <strong>ENVIADA</strong>
             </p>
           }
-          onSubmit={async (data) => {
-            data;
-          }}
+          onSubmit={handleStatusEnviada}
           titleComment="Comentario (opcional)"
         >
-          <div className="max-w-md mx-auto rounded-lg overflow-hidden md:max-w-xl">
-            <div className="md:flex">
-              <div className="w-full p-3">
-                <div className="relative h-48 rounded-lg border-2 border-gray-300 bg-gray-50 flex justify-center items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                  <div className="absolute flex flex-col items-center">
-                    <img
-                      alt="File Icon"
-                      className="mb-3"
-                      src="https://img.icons8.com/dusk/64/000000/file.png"
-                    />
-                    <span className="block text-gray-500 font-semibold">
-                      Arrastra &amp; suelta tu cotización aquí
-                    </span>
-                    <span className="block text-gray-400 font-normal mt-1">
-                      o haz click para subir
-                    </span>
+          {file ? (
+            <div className="h-48 rounded-lg border-2 border-gray-300 bg-gray-50 flex flex-col justify-center px-3 mt-3 items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+              <p className="text-gray-700 mb-2">
+                <strong>Archivo seleccionado:</strong>
+              </p>
+              <p>{file.name}</p>
+              <button
+                className="bg-red-500 text-white rounded-lg px-4 py-2 mt-4 cursor-pointer hover:bg-red-600"
+                onClick={() => setFile(null)}
+              >
+                Cambiar archivo
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="max-w-md mx-auto rounded-lg overflow-hidden md:max-w-xl">
+                <div className="md:flex">
+                  <div className="w-full p-3">
+                    <div className="relative h-48 rounded-lg border-2 border-gray-300 bg-gray-50 flex justify-center items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                      <div className="absolute flex flex-col items-center">
+                        <img
+                          alt="File Icon"
+                          className="mb-3"
+                          src="https://img.icons8.com/dusk/64/000000/file.png"
+                        />
+                        <span className="block text-gray-500 font-semibold">
+                          Arrastra &amp; suelta tu cotización aquí
+                        </span>
+                        <span className="block text-gray-400 font-normal mt-1">
+                          o haz click para subir
+                        </span>
+                      </div>
+                      <input
+                        name=""
+                        className="h-full w-full opacity-0 cursor-pointer"
+                        type="file"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            console.log(file);
+                            setFile(file);
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-
-                  <input
-                    name=""
-                    className="h-full w-full opacity-0 cursor-pointer"
-                    type="file"
-                  />
                 </div>
               </div>
-            </div>
-          </div>
+              {error && (
+                <p className="text-red-400 font-bold text-base">{error}</p>
+              )}
+            </>
+          )}
         </ModalConfirmacion>
       )}
       {initialState.derivada && (
         <ModalConfirmacion
+          isLoading={modalLoader}
+          setValue={setComment}
           isOpen={initialState.derivada}
           onCancel={() => handleState("derivada", false)}
           text={
@@ -301,23 +475,26 @@ export const DetalleCotizacion = () => {
               Cambar estado a <strong>DERIVADA</strong>
             </p>
           }
-          onSubmit={async (data) => {
-            data;
-          }}
+          onSubmit={handleStatusDerivado}
           titleComment="Comentario (opcional)"
         >
           <div className="w-[80%] mx-auto mt-5">
-            <SelectTable
+            <p className="text-lg">
+              ☑️ Derivar a <strong>Gerencia Comerial</strong>
+            </p>
+            {/* <SelectTable
               label="Selecciona el area"
               selectOptions={[{ value: "ventas", texto: "Gerencia Comercial" }]}
               onChange={(e) => console.log(e.target.value)}
               value=""
-            />
+            /> */}
           </div>
         </ModalConfirmacion>
       )}
       {initialState.seguimiento && (
         <ModalConfirmacion
+          isLoading={modalLoader}
+          setValue={setComment}
           isOpen={initialState.seguimiento}
           onCancel={() => handleState("seguimiento", false)}
           text={
@@ -325,14 +502,14 @@ export const DetalleCotizacion = () => {
               Cambar estado a <strong>SEGUIMIENTO</strong>
             </p>
           }
-          onSubmit={async (data) => {
-            data;
-          }}
+          onSubmit={handleStatusSegumiento}
           titleComment="Ingresa los detalles del seguimiento*"
         ></ModalConfirmacion>
       )}
       {initialState.agregarSeguimiento && (
         <ModalConfirmacion
+          isLoading={modalLoader}
+          setValue={setComment}
           isOpen={initialState.agregarSeguimiento}
           onCancel={() => handleState("agregarSeguimiento", false)}
           text={
@@ -340,14 +517,14 @@ export const DetalleCotizacion = () => {
               Nuevo <strong>SEGUIMIENTO</strong>
             </p>
           }
-          onSubmit={async (data) => {
-            data;
-          }}
+          onSubmit={handleStatusSegumiento}
           titleComment="Ingresa los detalles del seguimiento*"
         ></ModalConfirmacion>
       )}
       {initialState.vendido && (
         <ModalConfirmacion
+          isLoading={modalLoader}
+          setValue={setComment}
           isOpen={initialState.vendido}
           onCancel={() => handleState("vendido", false)}
           text={
@@ -355,9 +532,7 @@ export const DetalleCotizacion = () => {
               Cambar estado a <strong>VENDIDO</strong>
             </p>
           }
-          onSubmit={async (data) => {
-            data;
-          }}
+          onSubmit={handleStatusVenta}
           titleComment="Comentario (opcional)"
         >
           <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
@@ -365,14 +540,27 @@ export const DetalleCotizacion = () => {
               Ingresa el monto neto de la venta.
             </label>
             <input
-              type="number"
+              type="text"
               className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500"
+              onChange={(e) => {
+                const rawValue = parseCurrency(e.target.value); // Parse the formatted value back to a number
+                setTotalAmount(rawValue); // Update the state with the raw number
+              }}
+              onBlur={(e) => {
+                // Format the value when the input loses focus
+                const rawValue = parseCurrency(e.target.value);
+                e.target.value = formatAsCLP(rawValue) || "";
+              }}
+              value={totalAmount !== null ? formatAsCLP(totalAmount) : ""}
             />
           </div>
         </ModalConfirmacion>
       )}
       {initialState.perdida && (
         <ModalConfirmacion
+          error={error || ""}
+          isLoading={modalLoader}
+          setValue={setComment}
           isOpen={initialState.perdida}
           onCancel={() => handleState("perdida", false)}
           text={
@@ -380,9 +568,7 @@ export const DetalleCotizacion = () => {
               Cambar estado a <strong>PERDIDA</strong>
             </p>
           }
-          onSubmit={async (data) => {
-            data;
-          }}
+          onSubmit={handleStatusPerdido}
           titleComment="Ingresa el motivo de la perdida*"
         ></ModalConfirmacion>
       )}

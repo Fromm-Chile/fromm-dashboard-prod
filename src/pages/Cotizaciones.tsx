@@ -154,7 +154,7 @@ export const Cotizaciones = () => {
                 : getValue() === "SEGUIMIENTO"
                 ? "bg-yellow-500"
                 : getValue() === "DERIVADA"
-                ? "bg-green-600"
+                ? "bg-blue-600"
                 : getValue() === "PERDIDA"
                 ? "bg-red-700"
                 : ""

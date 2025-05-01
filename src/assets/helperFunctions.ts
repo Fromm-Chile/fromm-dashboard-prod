@@ -26,3 +26,15 @@ export const pasarPrimeraMayuscula = (str: string) => {
     .map((str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase())
     .join(" ");
 };
+
+export const formatAsCLP = (amount: number) => {
+  if (!amount) return;
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP", // Adjust if you want to show decimal places
+  }).format(amount);
+};
+
+export const parseCurrency = (formattedValue: string) => {
+  return Number(formattedValue.replace(/[^0-9]/g, ""));
+};

@@ -10,6 +10,8 @@ type ModalConfirmacionProps = {
   isLoading?: boolean;
   titleComment?: string;
   hasComment?: boolean;
+  setValue: (value: string) => void;
+  error?: string;
 };
 
 export const ModalConfirmacion = ({
@@ -22,6 +24,8 @@ export const ModalConfirmacion = ({
   children,
   titleComment = "Comentario",
   hasComment = true,
+  setValue,
+  error,
 }: PropsWithChildren<ModalConfirmacionProps>) => {
   return (
     <>
@@ -34,15 +38,23 @@ export const ModalConfirmacion = ({
               <div className="flex flex-col justify-center h-auto w-[510px] overflow-y-auto overflow-x-hidden">
                 <div className="bg-white rounded-lg h-full w-full border-2 border-red-900 flex flex-col items-center justify-center min-h-[274px] py-5">
                   <img src="/icons/alert.svg" width={70} className="mb-5" />
-                  <p>{text}</p>
+                  {text}
                   {children}
                   {hasComment && (
-                    <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
-                      <label htmlFor="" className="self-start mb-1">
-                        {titleComment}
-                      </label>
-                      <textarea className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500" />
-                    </div>
+                    <>
+                      <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
+                        <label htmlFor="" className="self-start mb-1">
+                          {titleComment}
+                        </label>
+                        <textarea
+                          onChange={(e) => setValue(e.target.value)}
+                          className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500"
+                        />
+                      </div>
+                      <p className="text-red-400 font-bold text-base">
+                        {error}
+                      </p>
+                    </>
                   )}
                   <div className="flex gap-5">
                     <button
