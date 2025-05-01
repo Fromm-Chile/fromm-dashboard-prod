@@ -40,7 +40,9 @@ export const DetalleContacto = () => {
     handleState(value, true);
   };
 
-  const handleStatusDerivado = async () => {};
+  const handleStatusDerivado = async () => {
+    setModalLoader(true);
+  };
 
   return (
     <>
@@ -161,7 +163,6 @@ export const DetalleContacto = () => {
             <ModalConfirmacion
               isLoading={modalLoader}
               hasComment={false}
-              setValue={() => {}}
               isOpen={initialState.derivada}
               onCancel={() => handleState("derivada", false)}
               text={

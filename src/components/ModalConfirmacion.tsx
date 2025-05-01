@@ -10,7 +10,7 @@ type ModalConfirmacionProps = {
   isLoading?: boolean;
   titleComment?: string;
   hasComment?: boolean;
-  setValue: (value: string) => void;
+  setValue?: (value: string) => void;
   error?: string;
 };
 
@@ -47,7 +47,7 @@ export const ModalConfirmacion = ({
                           {titleComment}
                         </label>
                         <textarea
-                          onChange={(e) => setValue(e.target.value)}
+                          onChange={(e) => setValue && setValue(e.target.value)}
                           className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500"
                         />
                       </div>
