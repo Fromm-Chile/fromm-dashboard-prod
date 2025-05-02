@@ -9,6 +9,7 @@ import { useModalStates } from "../hooks/useModalStates";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
 import { formatAsCLP, parseCurrency } from "../assets/helperFunctions";
+import { useUserStore } from "../store/useUserStore";
 
 export const DetalleCotizacion = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
@@ -25,6 +26,8 @@ export const DetalleCotizacion = () => {
     vendido: false,
     perdida: false,
   });
+
+  const { user = {} } = useUserStore();
 
   const { id } = useParams();
 
@@ -242,27 +245,29 @@ export const DetalleCotizacion = () => {
                   )}
                 </div>
                 <div>
-                  <SelectTable
-                    selectOptions={
-                      cotizacion.statusR.name === "PENDIENTE"
-                        ? [
-                            { value: "enviada", texto: "ENVIADA" },
-                            { value: "derivada", texto: "DERIVADA" },
-                          ]
-                        : [
-                            { value: "enviada", texto: "ENVIADA" },
-                            { value: "seguimiento", texto: "SEGUIMIENTO" },
-                            { value: "vendido", texto: "VENDIDO" },
-                            { value: "perdida", texto: "PERDIDA" },
-                          ]
-                    }
-                    label="Estado de la cotización"
-                    onChange={(e) => {
-                      setEstatus(e.target.value);
-                      handleClick(e.target.value);
-                    }}
-                    value={estatus || cotizacion.statusR.id}
-                  />
+                  {user.roleId === 4 || user.roleId === 5 ? null : (
+                    <SelectTable
+                      selectOptions={
+                        cotizacion.statusR.name === "PENDIENTE"
+                          ? [
+                              { value: "enviada", texto: "ENVIADA" },
+                              { value: "derivada", texto: "DERIVADA" },
+                            ]
+                          : [
+                              { value: "enviada", texto: "ENVIADA" },
+                              { value: "seguimiento", texto: "SEGUIMIENTO" },
+                              { value: "vendido", texto: "VENDIDO" },
+                              { value: "perdida", texto: "PERDIDA" },
+                            ]
+                      }
+                      label="Estado de la cotización"
+                      onChange={(e) => {
+                        setEstatus(e.target.value);
+                        handleClick(e.target.value);
+                      }}
+                      value={estatus || cotizacion.statusR.id}
+                    />
+                  )}
                   {cotizacion.statusR.name === "PENDIENTE" ||
                   cotizacion.statusR.name === "DERIVADA" ? null : (
                     <div className="mt-2 flex gap-2 justify-center text-green-500 font-bold border border-gray-200 bg-white rounded-lg p-2 hover:bg-gray-100 hover:text-green-600">

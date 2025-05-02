@@ -13,6 +13,7 @@ import { NuevaCotizacion } from "./pages/NuevaCotizacion";
 import { HistorialCliente } from "./pages/HistorialCliente";
 import ScrollToTop from "./components/ScrollToTop";
 import { Inicio } from "./pages/Inicio";
+import { Home } from "./pages/Home";
 
 export const router = createBrowserRouter([
   {
@@ -26,7 +27,8 @@ export const router = createBrowserRouter([
       </>
     ),
     children: [
-      { path: "/inicio", element: <Inicio /> },
+      { path: "/inicio", element: <Home /> },
+      { path: "/resultados", element: <Inicio /> },
       { path: "/cotizaciones", element: <Cotizaciones /> },
       { path: "/cotizaciones/:id", element: <DetalleCotizacion /> },
       { path: "/contactos", element: <Contactos /> },

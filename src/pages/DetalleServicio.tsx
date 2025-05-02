@@ -7,12 +7,15 @@ import { useState } from "react";
 import { useModalStates } from "../hooks/useModalStates";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
+import { useUserStore } from "../store/useUserStore";
 
 export const DetalleServicio = () => {
   const [modalLoader, setModalLoader] = useState(false);
   const [initialState, handleState] = useModalStates({
     finalizado: false,
   });
+
+  const { user = {} } = useUserStore();
 
   const { id } = useParams();
 
@@ -113,7 +116,9 @@ export const DetalleServicio = () => {
                   </div>
                 </div>
                 <div>
-                  {contacto.status.name !== "PENDIENTE" ? null : (
+                  {contacto.status.name !== "PENDIENTE" ||
+                  user.roleId === 4 ||
+                  user.roleId === 5 ? null : (
                     <Button
                       link=""
                       onClick={() => handleState("finalizado", true)}

@@ -7,6 +7,7 @@ import { SelectTable } from "../components/SelectTable";
 import { useModalStates } from "../hooks/useModalStates";
 import { useState } from "react";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
+import { useUserStore } from "../store/useUserStore";
 
 export const DetalleContacto = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
@@ -18,6 +19,9 @@ export const DetalleContacto = () => {
     cotizado: false,
     servicio: false,
   });
+
+  const { user = {} } = useUserStore();
+
   const { id } = useParams();
 
   const { data: contacto = {}, isLoading } = useQuery({
@@ -178,7 +182,9 @@ export const DetalleContacto = () => {
                   </div>
                 </div>
                 <div>
-                  {contacto.status.name !== "PENDIENTE" ? null : (
+                  {contacto.status.name !== "PENDIENTE" ||
+                  user.roleId === 4 ||
+                  user.roleId === 5 ? null : (
                     <SelectTable
                       selectOptions={[
                         { value: "cotizado", texto: "COTIZACIÓN" },

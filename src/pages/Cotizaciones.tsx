@@ -17,7 +17,7 @@ export const Cotizaciones = () => {
   const [columnOrder, setColumnOrder] = useState(false);
 
   const navigate = useNavigate();
-  const { countryCode } = useUserStore();
+  const { countryCode, user = {} } = useUserStore();
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -178,12 +178,14 @@ export const Cotizaciones = () => {
         <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
           <div className="mb-6 flex justify-between items-center">
             <h1 className="text-2xl font-medium text-center">Cotizaciones</h1>
-            <button
-              className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
-              onClick={() => navigate("/nueva-cotizacion")}
-            >
-              CREAR COTIZACIÓN
-            </button>
+            {user.roleId === 4 || user.roleId === 5 ? null : (
+              <button
+                className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
+                onClick={() => navigate("/nueva-cotizacion")}
+              >
+                CREAR COTIZACIÓN
+              </button>
+            )}
           </div>
           <div className="flex items-center justify-around mb-4">
             <div className="border-2 border-gray-200 rounded-lg flex gap-1 items-center w-[450px]">

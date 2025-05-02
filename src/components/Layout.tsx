@@ -16,8 +16,8 @@ const navMenu: NavMenu[] = [
   {
     id: 1,
     name: "Inicio",
-    icon: "/icons/chart.svg",
-    iconWhite: "/icons/chartW.svg",
+    icon: "/icons/home.svg",
+    iconWhite: "/icons/homeW.svg",
     link: "/inicio",
   },
   {
@@ -48,6 +48,30 @@ const navMenu: NavMenu[] = [
     iconWhite: "/icons/usersW.svg",
     link: "/clientes",
   },
+  {
+    id: 6,
+    name: "Resultados",
+    icon: "/icons/chart.svg",
+    iconWhite: "/icons/chartW.svg",
+    link: "/resultados",
+  },
+];
+
+const navMenuServicioTecnico: NavMenu[] = [
+  {
+    id: 1,
+    name: "Inicio",
+    icon: "/icons/home.svg",
+    iconWhite: "/icons/homeW.svg",
+    link: "/inicio",
+  },
+  {
+    id: 4,
+    name: "Servicio Técnico",
+    icon: "/icons/tool.svg",
+    iconWhite: "/icons/toolW.svg",
+    link: "/servicios",
+  },
 ];
 
 export const Layout = () => {
@@ -77,10 +101,10 @@ export const Layout = () => {
       if (roleId === 1) {
         setCountryCode("CL");
       }
-      if (roleId === 2 || roleId === 4) {
+      if (roleId === 2 || roleId === 4 || roleId === 6) {
         setCountryCode("CL");
       }
-      if (roleId === 3 || roleId === 5) {
+      if (roleId === 3 || roleId === 5 || roleId === 7) {
         setCountryCode("PE");
       }
     }
@@ -103,7 +127,10 @@ export const Layout = () => {
             <img src="/favicon.ico" width={40} />
           )}
         </div>
-        <MenuItem menuData={navMenu} isOpen={open} />
+        <MenuItem
+          menuData={roleId === 6 ? navMenuServicioTecnico : navMenu}
+          isOpen={open}
+        />
         <img
           src="/icons/hide.svg"
           height={40}
@@ -133,6 +160,12 @@ export const Layout = () => {
                 <option value="PE">🇵🇪 Perú</option>
               </select>
             )}
+            {roleId === 2 || roleId === 4 || roleId === 6 ? (
+              <p className="text-lg">🇨🇱 Fromm Chile</p>
+            ) : null}
+            {roleId === 3 || roleId === 5 || roleId === 7 ? (
+              <p className="text-lg">🇵🇪 Fromm Perú</p>
+            ) : null}
           </div>
           <div
             className="flex gap-2 items-center text-lg font-medium cursor-pointer border border-red-500 p-2 rounded-lg bg-white hover:bg-red-500 hover:text-white text-gray-600 transition-all"
