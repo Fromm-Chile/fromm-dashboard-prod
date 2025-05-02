@@ -11,10 +11,12 @@ import { ModalConfirmacion } from "../components/ModalConfirmacion";
 export const DetalleContacto = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
   const [modalLoader, setModalLoader] = useState(false);
-  const [area, setArea] = useState<string>("");
+  const [department, setDepartment] = useState<string>("");
+  const [otro, setOtro] = useState<string>("");
   const [initialState, handleState] = useModalStates({
     derivada: false,
     cotizado: false,
+    servicio: false,
   });
   const { id } = useParams();
 
@@ -31,8 +33,6 @@ export const DetalleContacto = () => {
     },
   });
 
-  console.log(contacto);
-
   const navigate = useNavigate();
 
   const handleClick = (value: string) => {
@@ -40,9 +40,80 @@ export const DetalleContacto = () => {
     handleState(value, true);
   };
 
-  const handleStatusDerivado = async () => {
-    setModalLoader(true);
+  const handleStatusCotizado = async () => {
+    try {
+      setModalLoader(true);
+      await axios.post(
+        `${apiUrl}/admin/invoices/invoice-from-contact`,
+        {
+          data: {
+            email: contacto.email,
+            name: contacto.name,
+            phone: contacto.phone,
+            company: contacto.company,
+            message: contacto.message,
+            countryId: contacto.user.contryId,
+          },
+          contactId: Number(id),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("cotizado", false);
+      navigate("/contactos");
+      setModalLoader(false);
+    }
   };
+
+  const handleStatusServicio = async () => {
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/contacts`,
+        { id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("servicio", false);
+      navigate("/contactos");
+      setModalLoader(false);
+    }
+  };
+
+  const handleStatusDerivado = async () => {
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/contacts/derivado`,
+        { id, department: department === "Otro" ? otro : department },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("cotizado", false);
+      navigate("/contactos");
+      setModalLoader(false);
+    }
+  };
+
+  console.log(department);
 
   return (
     <>
@@ -95,7 +166,7 @@ export const DetalleContacto = () => {
                       className={`p-2 rounded-lg text-center w-fit text-white mt-2 ${
                         contacto.status.name === "PENDIENTE"
                           ? "bg-gray-400 "
-                          : contacto.status.name === "COTIZADO"
+                          : contacto.status.name === "COTIZACIÓN"
                           ? "bg-green-400"
                           : contacto.status.name === "DERIVADA"
                           ? "bg-blue-600"
@@ -107,19 +178,22 @@ export const DetalleContacto = () => {
                   </div>
                 </div>
                 <div>
-                  <SelectTable
-                    selectOptions={[
-                      { value: "cotizado", texto: "COTIZADO" },
-                      { value: "servicio", texto: "SERVICIO" },
-                      { value: "derivada", texto: "DERIVADA" },
-                    ]}
-                    label="Estado del contacto"
-                    onChange={(e) => {
-                      setEstatus(e.target.value);
-                      handleClick(e.target.value);
-                    }}
-                    value={estatus || contacto.status.id}
-                  />
+                  {contacto.status.name !== "PENDIENTE" ? null : (
+                    <SelectTable
+                      selectOptions={[
+                        { value: "cotizado", texto: "COTIZACIÓN" },
+                        { value: "servicio", texto: "SERVICIO" },
+                        { value: "derivada", texto: "DERIVADA" },
+                      ]}
+                      label="Estado del contacto"
+                      onChange={(e) => {
+                        setEstatus(e.target.value);
+                        handleClick(e.target.value);
+                      }}
+                      value={estatus || contacto.status.id}
+                      disabled={contacto.status.name !== "PENDIENTE"}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -177,24 +251,74 @@ export const DetalleContacto = () => {
                 <SelectTable
                   label="Selecciona el area"
                   selectOptions={[
-                    { value: "ventas", texto: "Gerencia Comercial" },
-                    { value: "compras", texto: "Compras" },
-                    { value: "recursos-humanos", texto: "Recursos Humanos" },
-                    { value: "comex", texto: "Comex" },
-                    { value: "logística", texto: "Logística" },
-                    { value: "otro", texto: "Otro" },
+                    {
+                      value: "Gerencia Comercial",
+                      texto: "Gerencia Comercial",
+                    },
+                    { value: "Compras", texto: "Compras" },
+                    { value: "Recursos Humanos", texto: "Recursos Humanos" },
+                    { value: "Comex", texto: "Comex" },
+                    { value: "Logística", texto: "Logística" },
+                    { value: "Otro", texto: "Otro" },
                   ]}
-                  onChange={(e) => setArea(e.target.value)}
-                  value={area || ""}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  value={department || ""}
                 />
-                {area === "otro" && (
+                {department === "Otro" && (
                   <input
                     type="text"
                     placeholder="Especifica el área"
                     className="border border-gray-300 p-2 w-full rounded-md focus-visible:outline-none focus-visible:border-red-500 mt-2"
-                    onChange={(e) => setArea(e.target.value)}
+                    onChange={(e) => {
+                      department === "Otro" && setOtro(e.target.value);
+                    }}
+                    value={otro || ""}
                   />
                 )}
+              </div>
+            </ModalConfirmacion>
+          )}
+          {initialState.cotizado && (
+            <ModalConfirmacion
+              isLoading={modalLoader}
+              hasComment={false}
+              isOpen={initialState.cotizado}
+              onCancel={() => handleState("cotizado", false)}
+              text={
+                <p>
+                  Cambar estado a <strong>COTIZADO</strong>
+                </p>
+              }
+              onSubmit={handleStatusCotizado}
+            >
+              <div>
+                <p className="text-gray-700 text-center">
+                  Estas seguro que quires crear un{" "}
+                  <strong>nueva cotización</strong> a partir de la información
+                  de este mensaje?
+                </p>
+              </div>
+            </ModalConfirmacion>
+          )}
+          {initialState.servicio && (
+            <ModalConfirmacion
+              isLoading={modalLoader}
+              hasComment={false}
+              isOpen={initialState.servicio}
+              onCancel={() => handleState("servicio", false)}
+              text={
+                <p>
+                  Cambar estado a <strong>SERVICIO</strong>
+                </p>
+              }
+              onSubmit={handleStatusServicio}
+              titleComment="Comentario (opcional)"
+            >
+              <div>
+                <p className="text-gray-700 text-center">
+                  Estas seguro que quires mover este mensaje a{" "}
+                  <strong>servicio técnico</strong>?
+                </p>
               </div>
             </ModalConfirmacion>
           )}

@@ -75,7 +75,7 @@ export const Cotizaciones = () => {
       },
     });
 
-  const { data: { totalCount, pendingInvoices, soldInvoices } = {} } = useQuery(
+  const { data: { totalCount, pendingInvoices, sendInvoices } = {} } = useQuery(
     {
       queryKey: ["datos", countryCode],
       queryFn: async () => {
@@ -173,7 +173,7 @@ export const Cotizaciones = () => {
         <Summary
           total={totalCount || 0}
           pendiente={pendingInvoices || 0}
-          enviada={soldInvoices || 0}
+          enviada={sendInvoices || 0}
         />
         <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
           <div className="mb-6 flex justify-between items-center">

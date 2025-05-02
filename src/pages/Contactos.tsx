@@ -150,19 +150,11 @@ export const Contactos = () => {
           <div
             className={`p-2 rounded-lg text-center text-white ${
               getValue() === "PENDIENTE"
-                ? "bg-gray-300 "
-                : getValue() === "ENVIADA"
+                ? "bg-gray-400 "
+                : getValue() === "COTIZACIÓN"
                 ? "bg-green-400"
-                : getValue() === "VENDIDO"
-                ? "bg-green-500"
-                : getValue() === "SEGUIMIENTO"
-                ? "bg-yellow-500"
                 : getValue() === "DERIVADA"
-                ? "bg-green-600"
-                : getValue() === "PERDIDA"
-                ? "bg-red-700"
-                : getValue() === "COTIZADO"
-                ? "bg-red-500"
+                ? "bg-blue-600"
                 : ""
             }`}
           >
@@ -241,40 +233,42 @@ export const Contactos = () => {
             }}
             isLoading={isLoading}
           />
-          <div className="flex gap-5 items-center justify-end mt-8">
-            <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">
-              <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
-                <button
-                  onClick={() =>
-                    setPage((prev) => (prev > 0 ? prev - 1 : prev))
-                  }
-                  disabled={page === 1}
-                  className="cursor-pointer"
-                >
-                  <img src="/icons/left-arrow.svg" height={20} width={20} />
-                </button>
-              </div>
-              <div>
-                <p>
-                  Página {page} de {totalPages}
-                </p>
-              </div>
-              <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
-                <button
-                  onClick={() =>
-                    setPage((prev) => (prev < totalPages ? prev + 1 : prev))
-                  }
-                  className="cursor-pointer"
-                >
-                  <img
-                    src="/icons/right-arrow-black.svg"
-                    height={20}
-                    width={20}
-                  />
-                </button>
+          {totalCount > 10 && (
+            <div className="flex gap-5 items-center justify-end mt-8">
+              <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">
+                <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
+                  <button
+                    onClick={() =>
+                      setPage((prev) => (prev > 0 ? prev - 1 : prev))
+                    }
+                    disabled={page === 1}
+                    className="cursor-pointer"
+                  >
+                    <img src="/icons/left-arrow.svg" height={20} width={20} />
+                  </button>
+                </div>
+                <div>
+                  <p>
+                    Página {page} de {totalPages}
+                  </p>
+                </div>
+                <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
+                  <button
+                    onClick={() =>
+                      setPage((prev) => (prev < totalPages ? prev + 1 : prev))
+                    }
+                    className="cursor-pointer"
+                  >
+                    <img
+                      src="/icons/right-arrow-black.svg"
+                      height={20}
+                      width={20}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

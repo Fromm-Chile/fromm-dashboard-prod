@@ -3,6 +3,7 @@ type SelectTableProps = {
   selectOptions: any[];
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   value: string;
+  disabled?: boolean;
 };
 
 export const SelectTable = ({
@@ -10,6 +11,7 @@ export const SelectTable = ({
   selectOptions,
   onChange,
   value,
+  disabled,
 }: SelectTableProps) => {
   return (
     <div className="flex flex-col text-gray-600">
@@ -20,6 +22,7 @@ export const SelectTable = ({
         className="w-[225px] rounded-md border-2 bg-white border-gray-300 p-2 focus-visible:outline-none focus-visible:border-red-500"
         onChange={onChange}
         value={value}
+        disabled={disabled}
       >
         <option value="" className="text-gray-300">
           Seleccionar...

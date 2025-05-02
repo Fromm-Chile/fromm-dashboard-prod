@@ -1,22 +1,58 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { apiUrl } from "../assets/variables";
 import { Table } from "../components/Table";
 import { useUserStore } from "../store/useUserStore";
+import { useEffect, useState } from "react";
+import useDebounce from "../hooks/useDebounce";
+import { useNavigate } from "react-router";
 
 export const Clientes = () => {
+  const [search, setSearch] = useState("");
+  const [limit, setLimit] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
+  const [columnOrder, setColumnOrder] = useState(false);
   const { countryCode } = useUserStore();
 
-  const { data: clientes = [], isLoading } = useQuery({
-    queryKey: ["clientes"],
+  const navigate = useNavigate();
+  const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    setSearch(debouncedSearch);
+  }, [debouncedSearch]);
+
+  const { data: { users = [], totalPages = 1 } = {}, isLoading } = useQuery({
+    queryKey: [
+      "clientes",
+      countryCode,
+      debouncedSearch,
+      limit,
+      page,
+      columnOrder,
+    ],
     queryFn: async () => {
-      const { data } = await axios.get(`${apiUrl}/admin/users`, {
-        params: { countryCode },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      return data;
+      try {
+        const { data } = await axios.get(`${apiUrl}/admin/users`, {
+          params: {
+            countryCode,
+            name: debouncedSearch,
+            limit: Number(limit),
+            page: page - 1,
+            idOrder: columnOrder ? "asc" : "desc",
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        return data;
+      } catch (error) {
+        if (error instanceof AxiosError && error.status === 401) {
+          navigate("/login");
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        return [];
+      }
     },
   });
 
@@ -36,18 +72,6 @@ export const Clientes = () => {
       header: "Email",
       accessorKey: "email",
     },
-    // {
-    //   header: "Fecha de Registro",
-    //   accessorKey: "createdAt",
-    //   cell: ({ getValue }: { getValue: () => any }) => {
-    //     const date = new Date(getValue());
-    //     return date.toLocaleDateString("es-ES", {
-    //       day: "2-digit",
-    //       month: "2-digit",
-    //       year: "numeric",
-    //     });
-    //   },
-    // },
     {
       header: "Empresa",
       accessorKey: "company",
@@ -75,8 +99,8 @@ export const Clientes = () => {
               <input
                 type="text"
                 placeholder="Buscar..."
-                // value={search}
-                // onChange={(e) => setSearch(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="p-2 rounded-lg outline-none w-[450px]"
               />
             </div>
@@ -85,10 +109,10 @@ export const Clientes = () => {
               <p>Mostrar</p>
               <select
                 className="select-registros"
-                // value={limit || ""}
-                // onChange={(e) => {
-                //   setLimit(Number(e.target.value));
-                // }}
+                value={limit || ""}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                }}
               >
                 {[10, 25, 50, 100].map((pageSize) => (
                   <option key={pageSize} value={pageSize}>
@@ -100,32 +124,37 @@ export const Clientes = () => {
             </div>
           </div>
           <Table
-            datosTabla={clientes}
+            datosTabla={users}
             columns={columns}
             detailsRoute="clientes"
             isLoading={isLoading}
+            handlerColumnFilter={() => {
+              setColumnOrder((prev) => !prev);
+            }}
           />
           <div className="flex gap-5 items-center justify-end mt-8">
             <div className="border-2 border-gray-200 rounded-lg flex gap-5 items-center">
               <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
                 <button
-                  // onClick={() =>
-                  //   setPage((prev) => (prev > 0 ? prev - 1 : prev))
-                  // }
-                  // disabled={!table.getCanPreviousPage()}
+                  onClick={() =>
+                    setPage((prev) => (prev > 0 ? prev - 1 : prev))
+                  }
+                  disabled={page === 1}
                   className="cursor-pointer"
                 >
                   <img src="/icons/left-arrow.svg" height={20} width={20} />
                 </button>
               </div>
               <div>
-                <p>{/* Página {page} de {totalPages} */}</p>
+                <p>
+                  Página {page} de {totalPages}
+                </p>
               </div>
               <div className="flex gap-5 items-center p-2 hover:bg-gray-200">
                 <button
-                  // onClick={() =>
-                  //   setPage((prev) => (prev < totalPages ? prev + 1 : prev))
-                  // }
+                  onClick={() =>
+                    setPage((prev) => (prev < totalPages ? prev + 1 : prev))
+                  }
                   className="cursor-pointer"
                 >
                   <img
