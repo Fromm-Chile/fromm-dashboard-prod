@@ -43,7 +43,7 @@ export const Table = ({
     <div className="relative">
       {isLoading && <Loader />}
       <table className="w-full relative">
-        <thead>
+        <thead className="cursor-pointer">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
