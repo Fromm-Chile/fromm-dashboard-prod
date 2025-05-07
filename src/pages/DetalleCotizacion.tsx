@@ -18,14 +18,21 @@ export const DetalleCotizacion = () => {
   const [file, setFile] = useState<File | null>(null);
   const [totalAmount, setTotalAmount] = useState<number | null>(null);
   const [modalLoader, setModalLoader] = useState(false);
-  const [initialState, handleState] = useModalStates({
-    enviada: false,
-    derivada: false,
-    seguimiento: false,
-    agregarSeguimiento: false,
-    vendido: false,
-    perdida: false,
-  });
+  const [initialState, handleState] = useModalStates(
+    {
+      enviada: false,
+      derivada: false,
+      seguimiento: false,
+      agregarSeguimiento: false,
+      vendido: false,
+      perdida: false,
+    },
+    (_, isOpen) => {
+      if (!isOpen) {
+        setEstatus(null);
+      }
+    }
+  );
 
   const { user = {} } = useUserStore();
 
@@ -52,7 +59,6 @@ export const DetalleCotizacion = () => {
     },
   });
 
-  // console.log(cotizacion);
   const navigate = useNavigate();
 
   const handleClick = (value: string) => {
@@ -265,7 +271,7 @@ export const DetalleCotizacion = () => {
                         setEstatus(e.target.value);
                         handleClick(e.target.value);
                       }}
-                      value={estatus || cotizacion.statusR.id}
+                      value={estatus || ""}
                     />
                   )}
                   {cotizacion.statusR.name === "PENDIENTE" ||
