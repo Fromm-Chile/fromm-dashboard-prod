@@ -14,11 +14,18 @@ export const DetalleContacto = () => {
   const [modalLoader, setModalLoader] = useState(false);
   const [department, setDepartment] = useState<string>("");
   const [otro, setOtro] = useState<string>("");
-  const [initialState, handleState] = useModalStates({
-    derivada: false,
-    cotizado: false,
-    servicio: false,
-  });
+  const [initialState, handleState] = useModalStates(
+    {
+      derivada: false,
+      cotizado: false,
+      servicio: false,
+    },
+    (_, isOpen) => {
+      if (!isOpen) {
+        setEstatus(null);
+      }
+    }
+  );
 
   const { user = {} } = useUserStore();
 
@@ -196,7 +203,7 @@ export const DetalleContacto = () => {
                         setEstatus(e.target.value);
                         handleClick(e.target.value);
                       }}
-                      value={estatus || contacto.status.id}
+                      value={estatus || ""}
                       disabled={contacto.status.name !== "PENDIENTE"}
                     />
                   )}
