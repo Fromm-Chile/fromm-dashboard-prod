@@ -1,38 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import Bar from "../components/Charts/Bar";
 import Line from "../components/Charts/Line";
 import { Summary } from "../components/Summary";
-import axios from "axios";
-import { apiUrl } from "../assets/variables";
-import { useUserStore } from "../store/useUserStore";
+// import axios from "axios";
+// import { apiUrl } from "../assets/variables";
+// import { useUserStore } from "../store/useUserStore";
 
 export const Inicio = () => {
-  const { countryCode } = useUserStore();
+  // const { countryCode } = useUserStore();
 
-  const { data: { totalAmount, totalCount } = {} } = useQuery({
-    queryKey: ["resultados"],
-    queryFn: async () => {
-      const startDate = new Date();
-      startDate.setMonth(startDate.getMonth() - 1);
-      const { data } = await axios.get(
-        `${apiUrl}/admin/invoices/resultados/cotizaciones`,
-        {
-          params: {
-            countryCode,
-            status: "PENDIENTE",
-            startDate,
-            endDate: new Date(),
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      return data;
-    },
-  });
+  // const { data: { totalAmount, totalCount } = {} } = useQuery({
+  //   queryKey: ["resultados"],
+  //   queryFn: async () => {
+  //     const startDate = new Date();
+  //     startDate.setMonth(startDate.getMonth() - 1);
+  //     const { data } = await axios.get(
+  //       `${apiUrl}/admin/invoices/resultados/cotizaciones`,
+  //       {
+  //         params: {
+  //           countryCode,
+  //           status: "PENDIENTE",
+  //           startDate,
+  //           endDate: new Date(),
+  //         },
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  //         },
+  //       }
+  //     );
+  //     return data;
+  //   },
+  // });
 
-  console.log(totalAmount, totalCount);
+  // console.log(totalAmount, totalCount);
 
   return (
     <div>
