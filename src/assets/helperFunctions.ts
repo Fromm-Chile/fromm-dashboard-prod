@@ -27,11 +27,11 @@ export const pasarPrimeraMayuscula = (str: string) => {
     .join(" ");
 };
 
-export const formatAsCLP = (amount: number) => {
-  if (!amount) return;
-  return new Intl.NumberFormat("es-CL", {
+export const formatAsUSD = (amount: number) => {
+  if (amount == null) return;
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "CLP", // Adjust if you want to show decimal places
+    currency: "USD",
   }).format(amount);
 };
 

@@ -8,7 +8,7 @@ import { SelectTable } from "../components/SelectTable";
 import { useModalStates } from "../hooks/useModalStates";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
-import { formatAsCLP, parseCurrency } from "../assets/helperFunctions";
+import { formatAsUSD, parseCurrency } from "../assets/helperFunctions";
 import { useUserStore } from "../store/useUserStore";
 
 export const DetalleCotizacion = () => {
@@ -245,8 +245,8 @@ export const DetalleCotizacion = () => {
                   </p>
                   {cotizacion.statusR.name === "VENDIDO" && (
                     <p className="text-gray-700 text-2xl">
-                      <strong>Monto neto de la venta:</strong>{" "}
-                      {formatAsCLP(cotizacion.totalAmount)}
+                      <strong>Monto neto de la venta:</strong> USD{" "}
+                      {formatAsUSD(cotizacion.totalAmount)}
                     </p>
                   )}
                 </div>
@@ -565,9 +565,9 @@ export const DetalleCotizacion = () => {
               onBlur={(e) => {
                 // Format the value when the input loses focus
                 const rawValue = parseCurrency(e.target.value);
-                e.target.value = formatAsCLP(rawValue) || "";
+                e.target.value = formatAsUSD(rawValue) || "";
               }}
-              value={totalAmount !== null ? formatAsCLP(totalAmount) : ""}
+              value={totalAmount !== null ? formatAsUSD(totalAmount) : ""}
             />
           </div>
         </ModalConfirmacion>
