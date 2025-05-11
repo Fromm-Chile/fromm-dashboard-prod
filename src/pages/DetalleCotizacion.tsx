@@ -8,7 +8,7 @@ import { SelectTable } from "../components/SelectTable";
 import { useModalStates } from "../hooks/useModalStates";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
-import { formatAsUSD, parseCurrency } from "../assets/helperFunctions";
+import { formatAsUSD } from "../assets/helperFunctions";
 import { useUserStore } from "../store/useUserStore";
 
 export const DetalleCotizacion = () => {
@@ -62,7 +62,6 @@ export const DetalleCotizacion = () => {
   const navigate = useNavigate();
 
   const handleClick = (value: string) => {
-    console.log(value);
     handleState(value, true);
   };
 
@@ -122,6 +121,9 @@ export const DetalleCotizacion = () => {
       setError("El monto de la venta es requerido!");
       return;
     }
+
+    // console.log(totalAmount);
+    // return;
     try {
       setModalLoader(true);
       await axios.put(
@@ -553,21 +555,20 @@ export const DetalleCotizacion = () => {
         >
           <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
             <label htmlFor="" className="self-start mb-1">
-              Ingresa el monto neto de la venta.
+              Ingresa el monto neto de la venta en{" "}
+              <strong>dólares americanos (USD)</strong>.
             </label>
             <input
-              type="text"
+              type="number"
               className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500"
               onChange={(e) => {
-                const rawValue = parseCurrency(e.target.value); // Parse the formatted value back to a number
-                setTotalAmount(rawValue); // Update the state with the raw number
+                setTotalAmount(Number(e.target.value));
               }}
-              onBlur={(e) => {
-                // Format the value when the input loses focus
-                const rawValue = parseCurrency(e.target.value);
-                e.target.value = formatAsUSD(rawValue) || "";
-              }}
-              value={totalAmount !== null ? formatAsUSD(totalAmount) : ""}
+              // onChange={(e) => {
+              //   console.log(e.target.value);
+              //   setTotalAmount(Number(e.target.value));
+              // }}
+              value={totalAmount || ""}
             />
           </div>
         </ModalConfirmacion>

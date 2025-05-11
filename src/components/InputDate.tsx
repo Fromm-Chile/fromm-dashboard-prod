@@ -1,23 +1,21 @@
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/material_green.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
-import "./custom-style.css";
-import { Controller } from "react-hook-form";
 
 type InputFechaProps = {
-  control: any;
-  name: string;
   label: string;
   obligatorio?: boolean;
   disabled?: boolean;
+  value?: string | Date;
+  onChange: (date: Date[]) => void;
 };
 
 export const InputFecha = ({
-  control,
-  name,
   label,
   obligatorio,
   disabled,
+  onChange,
+  value,
 }: InputFechaProps) => {
   const customSpanishLocale: any = {
     weekdays: {
@@ -37,34 +35,30 @@ export const InputFecha = ({
   const dateFormat = "d/m/Y";
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <div>
-          <p>
-            {label}
-            {obligatorio && <span>*</span>}
-          </p>
-          <div>
-            <div>
-              <Flatpickr
-                disabled={disabled}
-                placeholder="Ingresar"
-                value={value}
-                onChange={(selectedDate) => onChange(selectedDate[0])}
-                options={{
-                  dateFormat: dateFormat,
-                  locale: { ...Spanish, ...customSpanishLocale },
-                  disableMobile: true,
-                }}
-              />
-              <img src="/calendarioInput.svg" alt="calendario" />
-            </div>
-          </div>
-          {error && <span>{error.message}</span>}
-        </div>
-      )}
-    />
+    <div className="flex flex-col mb-5">
+      <p>
+        {label}
+        {obligatorio && <span>*</span>}
+      </p>
+      <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-4 bg-white w-[200px]">
+        <Flatpickr
+          disabled={disabled}
+          placeholder="Ingresar"
+          value={value}
+          onChange={onChange}
+          options={{
+            dateFormat: dateFormat,
+            locale: { ...Spanish, ...customSpanishLocale },
+            disableMobile: true,
+          }}
+        />
+        <img
+          src="/icons/calendar.svg"
+          alt="calendario"
+          height={30}
+          width={30}
+        />
+      </div>
+    </div>
   );
 };

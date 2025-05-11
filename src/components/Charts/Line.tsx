@@ -1,29 +1,48 @@
 import ResizableBox from "./ResizableBox";
-import useDemoConfig from "../../hooks/useDemoConfig";
+// import useDemoConfig from "../../hooks/useDemoConfig";
 import React from "react";
 import { AxisOptions, Chart } from "react-charts";
 
-export default function Line() {
-  const { data } = useDemoConfig({
-    series: 3,
-    dataType: "time",
-  });
+type Invoices = {
+  createdAt: Date;
+  totalCount: number;
+};
 
-  const primaryAxis = React.useMemo<
-    AxisOptions<(typeof data)[number]["data"][number]>
-  >(
+type LineProps = {
+  dataChart: Invoices[];
+};
+
+type Series = {
+  label: string;
+  data: Invoices[];
+};
+
+export default function Line({ dataChart }: LineProps) {
+  const data: Series[] = [
+    {
+      label: "Cotizaciones",
+      data: dataChart || [],
+    },
+  ];
+  // const { data } = useDemoConfig({
+  //   series: 3,
+  //   dataType: "time",
+  // });
+
+  const primaryAxis = React.useMemo<AxisOptions<Invoices>>(
     () => ({
-      getValue: (datum) => datum.primary as unknown as Date,
+      getValue: (datum) => datum.createdAt,
+      scaleType: "time",
     }),
     []
   );
 
-  const secondaryAxes = React.useMemo<
-    AxisOptions<(typeof data)[number]["data"][number]>[]
-  >(
+  const secondaryAxes = React.useMemo<AxisOptions<Invoices>[]>(
     () => [
       {
-        getValue: (datum) => datum.secondary,
+        getValue: (datum) => datum.totalCount,
+        scaleType: "linear",
+        tickFormat: (value: number) => Math.round(value).toString(),
       },
     ],
     []

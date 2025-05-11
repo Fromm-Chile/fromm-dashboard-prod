@@ -19,3 +19,107 @@ input[type='number'] {
     -webkit-appearance: none;
     margin: 0;
   }
+
+  /* flatpickr-custom.css */
+.label-inputFecha {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.flatpickr-calendar.open {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.flatpickr-input {
+  width: 100%;
+  font-family: "Barlow";
+  height: 48px;
+  position: relative;
+  border-radius: 8px;
+  color: #191919;
+  border: none;
+  font-size: 18px;
+}
+
+.flatpickr-input:focus {
+  outline: none;
+  border: none;
+}
+
+.flatpickr-calendar {
+  background: #fff;
+  font-family: "Barlow";
+  border-radius: 8px;
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+  margin: 32px 16px;
+}
+
+.flatpickr-months .flatpickr-month {
+  background-color: #fff;
+  color: black;
+  font-family: "Barlow";
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+  color: black;
+  fill: black;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  background-color: #fff;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+  fill: #002eff;
+}
+
+.flatpickr-weekdays {
+  background: #fff;
+  font-size: 14px;
+  font-family: "Barlow";
+}
+
+span.flatpickr-weekday {
+  background: #fff;
+  font-family: "Barlow";
+}
+
+.dayContainer {
+  font-family: "Barlow";
+}
+
+.flatpickr-day {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+span.flatpickr-day.today {
+  border: 1px solid #002eff;
+}
+
+.flatpickr-current-month
+  .flatpickr-monthDropdown-months
+  .flatpickr-monthDropdown-month {
+  background: #fff;
+}
+
+span.flatpickr-day.selected {
+  background: #002eff;
+  border: 1px solid #002eff;
+}
+
+span.flatpickr-day.selected:hover {
+  background: #002eff;
+  border: 1px solid #002eff;
+}
+
+.flatpickr-calendar.arrowBottom:after {
+  border-top-color: #002eff;
+}
+

@@ -37,6 +37,8 @@ export const formatAsUSD = (amount: number) => {
   }).format(amount);
 };
 
-export const parseCurrency = (formattedValue: string) => {
-  return Number(formattedValue.replace(/[^0-9]/g, ""));
+export const parseCurrency = (formattedValue: string): number => {
+  if (!formattedValue) return NaN;
+  const cleaned = formattedValue.replace(/[^0-9.-]/g, "");
+  return parseFloat(cleaned);
 };

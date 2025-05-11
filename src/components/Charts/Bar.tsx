@@ -1,29 +1,46 @@
 import ResizableBox from "./ResizableBox";
-import useDemoConfig from "../../hooks/useDemoConfig";
+// import useDemoConfig from "../../hooks/useDemoConfig";
 import React from "react";
 import { AxisOptions, Chart } from "react-charts";
 
-export default function Bar() {
-  const { data } = useDemoConfig({
-    series: 3,
-    dataType: "ordinal",
-  });
+type Ventas = {
+  createdAt: Date;
+  totalAmountSum: number;
+};
+
+type Series = {
+  label: string;
+  data: Ventas[];
+};
+
+export default function Bar({ dataChart }: { dataChart: Ventas[] }) {
+  const data: Series[] = [
+    {
+      label: "Ventas en USD",
+      data: dataChart || [],
+    },
+  ];
+  // const { data } = useDemoConfig({
+  //   series: 3,
+  //   dataType: "ordinal",
+  // });
 
   const primaryAxis = React.useMemo<
     AxisOptions<(typeof data)[number]["data"][number]>
   >(
     () => ({
-      getValue: (datum) => datum.primary,
+      getValue: (datum) => datum.createdAt,
+      scaleType: "time",
     }),
     []
   );
 
-  const secondaryAxes = React.useMemo<
-    AxisOptions<(typeof data)[number]["data"][number]>[]
-  >(
+  const secondaryAxes = React.useMemo<AxisOptions<Ventas>[]>(
     () => [
       {
-        getValue: (datum) => datum.secondary,
+        getValue: (datum) => Number(datum.totalAmountSum),
+        scaleType: "linear",
+        elementType: "bar",
       },
     ],
     []
