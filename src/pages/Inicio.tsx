@@ -1,6 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import Bar from "../components/Charts/Bar";
-import Line from "../components/Charts/Line";
 import { Summary } from "../components/Summary";
 import axios from "axios";
 import { apiUrl } from "../assets/variables";
@@ -8,6 +6,9 @@ import { useUserStore } from "../store/useUserStore";
 import { InputFecha } from "../components/InputDate";
 import { useState } from "react";
 import { Loader } from "../components/Loader";
+import { Button } from "../components/Button";
+import { Line } from "@/components/Line";
+import { Barras } from "@/components/Bar";
 
 type Invoices = {
   createdAt: Date;
@@ -16,46 +17,69 @@ type Invoices = {
 };
 
 export const Inicio = () => {
+  const [inputStartDate, setInputStartDate] = useState<Date | null>(
+    new Date(new Date().setDate(1))
+  );
+  const [inputEndDate, setInputEndDate] = useState<Date | null>(new Date());
+
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const { countryCode } = useUserStore();
 
   const {
-    data: { invoices = [], cotizacionesTotales = 0, montoTotal = 0 } = {},
+    data: {
+      filteredInvoices = [],
+      cotizacionesTotales = 0,
+      montoTotal = 0,
+    } = {},
     isLoading,
+    refetch: refetchData,
   } = useQuery({
     queryKey: ["montos-fecha", startDate, endDate],
     queryFn: async () => {
-      const today = new Date();
       const { data } = await axios.get(
         `${apiUrl}/admin/invoices/montos/fechas`,
         {
           params: {
             countryCode,
-            startDate: startDate ? startDate : new Date(today.setDate(1)),
-            endDate: endDate ? endDate : new Date(),
+            startDate: inputStartDate
+              ? inputStartDate
+              : new Date(new Date().setDate(1)),
+            endDate: inputEndDate ? inputEndDate : new Date(),
           },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
-      return data;
+
+      const filteredInvoices = data?.invoices.map((invoice: Invoices) => ({
+        createdAt: new Date(invoice.createdAt),
+        totalCount: invoice.totalCount,
+        totalAmountSum: invoice.totalAmountSum,
+      }));
+
+      return {
+        filteredInvoices,
+        cotizacionesTotales: data.cotizacionesTotales,
+        montoTotal: data.montoTotal,
+      };
     },
   });
 
-  const { data: cotizacionesVendidas = 0 } = useQuery({
+  const { data: cotizacionesVendidas = 0, refetch: refetchCount } = useQuery({
     queryKey: ["ventas-fecha", startDate, endDate],
     queryFn: async () => {
-      const today = new Date();
       const { data } = await axios.get(
         `${apiUrl}/admin/invoices/ventas/fechas`,
         {
           params: {
             countryCode,
-            startDate: startDate ? startDate : new Date(today.setDate(1)),
-            endDate: endDate ? endDate : new Date(),
+            startDate: inputStartDate
+              ? inputStartDate
+              : new Date(new Date().setDate(1)),
+            endDate: inputEndDate ? inputEndDate : new Date(),
           },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -66,40 +90,49 @@ export const Inicio = () => {
     },
   });
 
-  const formattedDataChart = invoices?.map((invoice: Invoices) => ({
-    createdAt: new Date(invoice.createdAt), // Ensure this is a Date object
-    totalCount: invoice.totalCount,
-    totalAmountSum: invoice.totalAmountSum,
-  }));
+  const handleFilter = () => {
+    setStartDate(inputStartDate); // Update the query parameters
+    setEndDate(inputEndDate);
+    refetchCount(); // Trigger the "ventas-fecha" query
+    refetchData(); // Trigger the "montos-fecha" query
+  };
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div>
-          <h1 className="text-4xl text-gray-500 text-center font-bold my-10">
-            Resumen Cotizaciones
-          </h1>
-          <div className="flex gap-2">
-            <InputFecha
-              label="Desde"
-              onChange={(e: Date[]) => {
-                console.log(e[0]);
-                setStartDate(e[0]);
-              }}
-              value={startDate ? new Date(startDate) : new Date()}
-              obligatorio
-            />
-            <InputFecha
-              label="Hasta"
-              onChange={(e) => {
-                setEndDate(e[0]);
-              }}
-              value={endDate ? new Date(endDate) : new Date()}
-              obligatorio
-            />
+      <div>
+        <h1 className="text-4xl text-gray-500 text-center font-bold my-10">
+          Resumen Cotizaciones
+        </h1>
+        <div className="flex gap-5 items-center justify-center border border-red-400 pt-2 rounded-2xl mb-5 bg-blue-100">
+          <p className="text-xl text-gray-600">Rango de fecha consultado</p>
+          <InputFecha
+            label="Desde"
+            onChange={(e: Date[]) => {
+              setInputStartDate(e[0]);
+            }}
+            value={inputStartDate || new Date(new Date().setDate(1))}
+            obligatorio
+          />
+          <InputFecha
+            label="Hasta"
+            onChange={(e) => {
+              setInputEndDate(e[0]);
+            }}
+            value={inputEndDate || new Date()}
+            obligatorio
+          />
+          <div>
+            <Button
+              link=""
+              className="w-[150px] text-center"
+              onClick={handleFilter}
+            >
+              Filtrar
+            </Button>
           </div>
+        </div>
+        <div className="relative">
+          {isLoading && <Loader />}
           <Summary
             total={cotizacionesTotales}
             enviada={montoTotal}
@@ -107,22 +140,22 @@ export const Inicio = () => {
             tituloEnviada="Monto Total USD"
             tituloPendiente="Cotizaciones Vendidas"
           />
-          <div className="flex gap-2 pb-10">
-            <div className="bg-white p-4 rounded-2xl">
-              <h2 className="text-gray-500 text-center text-2xl">
-                Cantidad de Solicitudes
-              </h2>
-              <Line dataChart={formattedDataChart} />
+          {filteredInvoices.length > 0 ? (
+            <div className="flex gap-4 pb-10">
+              <div className="bg-white p-1 rounded-2xl w-[50%]">
+                <Line chartData={filteredInvoices} />
+              </div>
+              <div className="bg-white p-1 rounded-2xl w-[50%]">
+                <Barras chartData={filteredInvoices} />
+              </div>
             </div>
-            <div className="bg-white p-4 rounded-2xl">
-              <h2 className="text-gray-500 text-center text-2xl">
-                Montos Vendidos
-              </h2>
-              <Bar dataChart={formattedDataChart} />
+          ) : (
+            <div className="flex justify-center items-center h-[300px]">
+              <p className="text-gray-500 text-xl">No hay datos para mostrar</p>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 };
