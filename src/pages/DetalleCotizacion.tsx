@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigate, useParams, useSearchParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { apiUrl } from "../assets/variables";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "../components/Loader";
