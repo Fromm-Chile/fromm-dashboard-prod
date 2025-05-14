@@ -116,14 +116,6 @@ export const ServicioTecnico = () => {
       },
     });
 
-  // const opcionesSelect = Array.from(
-  //   new Set(contactos.map((cotizacion: any) => cotizacion.status.name))
-  // ).map((name) => ({
-  //   id: name, // Use the name as the id (or generate a unique id if needed)
-  //   texto: name,
-  //   value: name,
-  // }));
-
   const columns = [
     {
       header: "Nro",

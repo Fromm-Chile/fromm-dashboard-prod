@@ -77,7 +77,7 @@ export const DetalleContacto = () => {
       console.error(error);
     } finally {
       handleState("cotizado", false);
-      navigate("/contactos");
+      navigate(-1);
       setModalLoader(false);
     }
   };
@@ -98,7 +98,7 @@ export const DetalleContacto = () => {
       console.error(error);
     } finally {
       handleState("servicio", false);
-      navigate("/contactos");
+      navigate(-1);
       setModalLoader(false);
     }
   };
@@ -119,7 +119,7 @@ export const DetalleContacto = () => {
       console.error(error);
     } finally {
       handleState("cotizado", false);
-      navigate("/contactos");
+      navigate(-1);
       setModalLoader(false);
     }
   };

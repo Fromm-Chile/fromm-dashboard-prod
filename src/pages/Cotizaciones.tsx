@@ -116,14 +116,6 @@ export const Cotizaciones = () => {
     }
   );
 
-  // const opcionesSelect = Array.from(
-  //   new Set(cotizaciones.map((cotizacion: any) => cotizacion.statusR.name))
-  // ).map((name) => ({
-  //   id: name, // Use the name as the id (or generate a unique id if needed)
-  //   texto: name,
-  //   value: name,
-  // }));
-
   const columns = [
     {
       header: "Nro",

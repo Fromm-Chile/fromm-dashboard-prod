@@ -86,7 +86,7 @@ export const DetalleCotizacion = () => {
       console.error(error);
     } finally {
       handleState("enviada", false);
-      navigate("/cotizaciones");
+      navigate(-1);
       setModalLoader(false);
     }
   };
@@ -111,7 +111,7 @@ export const DetalleCotizacion = () => {
       console.error(error);
     } finally {
       handleState("enviada", false);
-      navigate("/cotizaciones");
+      navigate(-1);
       setModalLoader(false);
     }
   };
@@ -139,7 +139,7 @@ export const DetalleCotizacion = () => {
       console.error(error);
     } finally {
       handleState("vendido", false);
-      navigate("/cotizaciones");
+      navigate(-1);
       setModalLoader(false);
     }
   };
@@ -160,7 +160,7 @@ export const DetalleCotizacion = () => {
       console.error(error);
     } finally {
       handleState("derivada", false);
-      navigate("/cotizaciones");
+      navigate(-1);
       setModalLoader(false);
     }
   };
@@ -185,7 +185,7 @@ export const DetalleCotizacion = () => {
       console.error(error);
     } finally {
       handleState("perdida", false);
-      navigate("/cotizaciones");
+      navigate(-1);
       setModalLoader(false);
     }
   };

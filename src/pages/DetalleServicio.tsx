@@ -50,7 +50,7 @@ export const DetalleServicio = () => {
       console.error(error);
     } finally {
       handleState("finalizado", false);
-      navigate("/servicios");
+      navigate(-1);
       setModalLoader(false);
     }
   };

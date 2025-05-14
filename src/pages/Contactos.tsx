@@ -91,7 +91,6 @@ export const Contactos = () => {
     }
   );
 
-  // console.log(contactos);
   const { data: { totalCount, pendingContacts, invoiceContacts } = {} } =
     useQuery({
       queryKey: ["datosContactos", countryCode],
@@ -117,14 +116,6 @@ export const Contactos = () => {
         }
       },
     });
-
-  // const opcionesSelect = Array.from(
-  //   new Set(contactos.map((cotizacion: any) => cotizacion.status.name))
-  // ).map((name) => ({
-  //   id: name, // Use the name as the id (or generate a unique id if needed)
-  //   texto: name,
-  //   value: name,
-  // }));
 
   const columns = [
     {
