@@ -136,7 +136,7 @@ export const DetalleContacto = () => {
             <img src="/icons/left-arrow.svg" width={15} height={15} />
             <button
               className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate("/contactos")}
+              onClick={() => navigate(-1)}
             >
               Volver
             </button>

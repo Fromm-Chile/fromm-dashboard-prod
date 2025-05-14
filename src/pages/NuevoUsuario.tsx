@@ -48,18 +48,14 @@ export const NuevoUsuario = () => {
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      await axios.post(
-        `${apiUrl}/admin/invoices`,
-        { data },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      await axios.post(`${apiUrl}/users-admin`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       setModal(false);
       setIsLoading(false);
-      navigate("/cotizaciones");
+      navigate("/usuarios");
     } catch (error) {
       console.log(error);
     }
@@ -115,12 +111,12 @@ export const NuevoUsuario = () => {
                   <option value="" className="text-gray-300">
                     Selecciona el Rol...
                   </option>
-                  <option value="2">AdminChile</option>
-                  <option value="3">AdminPeru</option>
-                  <option value="4">UserChile</option>
-                  <option value="5">UserPeru</option>
-                  <option value="6">ServicioChile</option>
-                  <option value="7">ServicioPeru</option>
+                  <option value="AdminChile">AdminChile</option>
+                  <option value="AdminPeru">AdminPeru</option>
+                  <option value="UserChile">UserChile</option>
+                  <option value="UserPeru">UserPeru</option>
+                  <option value="ServicioChile">ServicioChile</option>
+                  <option value="ServicioPeru">ServicioPeru</option>
                 </select>
               )}
             />

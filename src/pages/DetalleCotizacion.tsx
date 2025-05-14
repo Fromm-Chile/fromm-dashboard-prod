@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { apiUrl } from "../assets/variables";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "../components/Loader";
@@ -200,7 +200,7 @@ export const DetalleCotizacion = () => {
             <img src="/icons/left-arrow.svg" width={15} height={15} />
             <button
               className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate("/cotizaciones")}
+              onClick={() => navigate(-1)}
             >
               Volver
             </button>

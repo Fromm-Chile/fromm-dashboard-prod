@@ -3,19 +3,29 @@ import { Table } from "../components/Table";
 import { useQuery } from "@tanstack/react-query";
 import { apiUrl } from "../assets/variables";
 import axios, { AxiosError } from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useUserStore } from "../store/useUserStore";
 import { SelectTable } from "../components/SelectTable";
 import { useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 
+const opcionesSelect = [
+  { id: "PENDIENTE", texto: "Pendiente", value: "PENDIENTE" },
+  { id: "ENVIADA", texto: "Enviada", value: "ENVIADA" },
+  { id: "VENDIDO", texto: "Vendido", value: "VENDIDO" },
+  { id: "SEGUIMIENTO", texto: "Seguimiento", value: "SEGUIMIENTO" },
+  { id: "DERIVADA", texto: "Derivada", value: "DERIVADA" },
+  { id: "PERDIDA", texto: "Perdida", value: "PERDIDA" },
+];
+
 export const Cotizaciones = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string | null>(null);
   const [limit, setLimit] = useState<number>(10);
-  const [page, setPage] = useState<number>(1);
   const [columnOrder, setColumnOrder] = useState(false);
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("page");
+  const [page, setPage] = useState<number>(Number(query) || 1);
   const navigate = useNavigate();
   const { countryCode, user = {} } = useUserStore();
 
@@ -38,6 +48,10 @@ export const Cotizaciones = () => {
     }
   }, [filter]);
 
+  useEffect(() => {
+    setSearchParams({ page: page.toString() });
+  }, [page, setSearchParams]);
+
   const { data: { cotizaciones = [], totalPages = 1 } = {}, isLoading } =
     useQuery({
       queryKey: [
@@ -45,7 +59,7 @@ export const Cotizaciones = () => {
         debouncedSearch,
         filter,
         limit,
-        page,
+        page - 1,
         columnOrder,
       ],
       queryFn: async () => {
@@ -102,13 +116,13 @@ export const Cotizaciones = () => {
     }
   );
 
-  const opcionesSelect = Array.from(
-    new Set(cotizaciones.map((cotizacion: any) => cotizacion.statusR.name))
-  ).map((name) => ({
-    id: name, // Use the name as the id (or generate a unique id if needed)
-    texto: name,
-    value: name,
-  }));
+  // const opcionesSelect = Array.from(
+  //   new Set(cotizaciones.map((cotizacion: any) => cotizacion.statusR.name))
+  // ).map((name) => ({
+  //   id: name, // Use the name as the id (or generate a unique id if needed)
+  //   texto: name,
+  //   value: name,
+  // }));
 
   const columns = [
     {
