@@ -11,7 +11,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { DetalleServicio } from "./pages/DetalleServicio";
 import { NuevaCotizacion } from "./pages/NuevaCotizacion";
 import { HistorialCliente } from "./pages/HistorialCliente";
-import ScrollToTop from "./components/ScrollToTop";
+// import ScrollToTop from "./components/ScrollToTop";
 import { Inicio } from "./pages/Inicio";
 import { Home } from "./pages/Home";
 import { AdminUsers } from "./pages/AdminUsers";
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <>
-        <ScrollToTop />
+        {/* <ScrollToTop /> */}
         <ProtectedRoute>
           <Layout />
         </ProtectedRoute>

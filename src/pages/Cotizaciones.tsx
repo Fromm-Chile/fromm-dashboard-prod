@@ -19,11 +19,12 @@ const opcionesSelect = [
 ];
 
 export const Cotizaciones = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string | null>(null);
-  const [limit, setLimit] = useState<number>(10);
+  const querylimit = searchParams.get("limit");
+  const [limit, setLimit] = useState<number>(Number(querylimit) || 10);
   const [columnOrder, setColumnOrder] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("page");
   const [page, setPage] = useState<number>(Number(query) || 1);
   const navigate = useNavigate();
@@ -49,8 +50,8 @@ export const Cotizaciones = () => {
   }, [filter]);
 
   useEffect(() => {
-    setSearchParams({ page: page.toString() });
-  }, [page, setSearchParams]);
+    setSearchParams({ page: page.toString(), limit: limit.toString() });
+  }, [page, limit, setSearchParams]);
 
   const { data: { cotizaciones = [], totalPages = 1 } = {}, isLoading } =
     useQuery({
