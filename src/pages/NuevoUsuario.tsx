@@ -53,11 +53,12 @@ export const NuevoUsuario = () => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      setModal(false);
-      setIsLoading(false);
-      navigate("/usuarios");
     } catch (error) {
       console.log(error);
+    } finally {
+      setModal(false);
+      navigate("/usuarios");
+      setIsLoading(false);
     }
   };
 

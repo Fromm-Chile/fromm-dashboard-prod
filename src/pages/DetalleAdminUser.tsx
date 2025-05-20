@@ -7,7 +7,7 @@ import { useModalStates } from "@/hooks/useModalStates";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import * as yup from "yup";
@@ -25,6 +25,7 @@ export const DetalleAdminUser = () => {
     inhabilitar: false,
     habilitar: false,
   });
+  const [actionLoader, setActionLoader] = useState(false);
 
   const {
     control,
@@ -71,6 +72,7 @@ export const DetalleAdminUser = () => {
 
   const updateAdminUser = async (data: any) => {
     try {
+      setActionLoader(true);
       await axios.patch(`${apiUrl}/users-admin/${id}`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -81,11 +83,13 @@ export const DetalleAdminUser = () => {
     } finally {
       handleState("editar", false);
       navigate("/usuarios");
+      setActionLoader(false);
     }
   };
 
   const handleEnableToggle = async (isActive: boolean) => {
     try {
+      setActionLoader(true);
       await axios.patch(
         `${apiUrl}/users-admin/enable/${id}`,
         { isActive },
@@ -100,6 +104,7 @@ export const DetalleAdminUser = () => {
     } finally {
       handleState("inhabilitar", false);
       navigate("/usuarios");
+      setActionLoader(false);
     }
   };
 
@@ -180,8 +185,7 @@ export const DetalleAdminUser = () => {
       )}
       {initialState.editar && (
         <ModalConfirmacion
-          //   isLoading={isLoading}
-          //   setValue={setComment}
+          isLoading={isLoading}
           isOpen={initialState.editar}
           onCancel={() => handleState("editar", false)}
           text={
@@ -241,7 +245,7 @@ export const DetalleAdminUser = () => {
       )}
       {initialState.inhabilitar && (
         <ModalConfirmacion
-          //   isLoading={modalLoader}
+          isLoading={actionLoader}
           hasComment={false}
           isOpen={initialState.inhabilitar}
           onCancel={() => handleState("inhabilitar", false)}
@@ -258,7 +262,7 @@ export const DetalleAdminUser = () => {
       )}
       {initialState.habilitar && (
         <ModalConfirmacion
-          //   isLoading={modalLoader}
+          isLoading={actionLoader}
           hasComment={false}
           isOpen={initialState.habilitar}
           onCancel={() => handleState("habilitar", false)}
