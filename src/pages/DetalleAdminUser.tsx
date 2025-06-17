@@ -57,6 +57,7 @@ export const DetalleAdminUser = () => {
       return data;
     },
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {

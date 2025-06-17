@@ -18,6 +18,10 @@ const opcionesSelect = [
   { id: "PERDIDA", texto: "Perdida", value: "PERDIDA" },
 ];
 
+type Cotizacion = {
+  id: number;
+};
+
 export const Cotizaciones = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState("");
@@ -54,7 +58,7 @@ export const Cotizaciones = () => {
   }, [page, limit, setSearchParams]);
 
   const { data: { cotizaciones = [], totalPages = 1 } = {}, isLoading } =
-    useQuery({
+    useQuery<{ cotizaciones: Cotizacion[]; totalPages: number }>({
       queryKey: [
         "cotizaciones",
         debouncedSearch,
@@ -88,6 +92,7 @@ export const Cotizaciones = () => {
           return [];
         }
       },
+      staleTime: 5 * 60 * 1000,
     });
 
   const { data: { totalCount, pendingInvoices, sendInvoices } = {} } = useQuery(
@@ -127,11 +132,11 @@ export const Cotizaciones = () => {
     },
     {
       header: "Nombre",
-      accessorKey: "user.name",
+      accessorKey: "name",
     },
     {
       header: "Empresa",
-      accessorKey: "user.company",
+      accessorKey: "company",
     },
     {
       header: "Fecha",
@@ -147,7 +152,7 @@ export const Cotizaciones = () => {
     },
     {
       header: "Estatus",
-      accessorKey: "statusR.name",
+      accessorKey: "status",
       cell: ({ getValue }: { getValue: () => any }) => {
         return (
           <div

@@ -30,6 +30,7 @@ export const DetalleServicio = () => {
       });
       return data;
     },
+    staleTime: 5 * 60 * 1000,
   });
 
   const navigate = useNavigate();

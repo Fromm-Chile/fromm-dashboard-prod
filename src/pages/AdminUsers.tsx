@@ -26,6 +26,7 @@ export const AdminUsers = () => {
         return [];
       }
     },
+    staleTime: 5 * 60 * 1000,
   });
 
   const columns = [

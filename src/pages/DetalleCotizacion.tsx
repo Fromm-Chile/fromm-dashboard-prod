@@ -14,8 +14,8 @@ import { useUserStore } from "../store/useUserStore";
 export const DetalleCotizacion = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [comment, setComment] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
+  const [comment, setComment] = useState<string>("");
   const [totalAmount, setTotalAmount] = useState<number | null>(null);
   const [modalLoader, setModalLoader] = useState(false);
   const [initialState, handleState] = useModalStates(
@@ -57,6 +57,7 @@ export const DetalleCotizacion = () => {
       });
       return data;
     },
+    staleTime: 5 * 60 * 1000,
   });
 
   const navigate = useNavigate();
@@ -84,6 +85,11 @@ export const DetalleCotizacion = () => {
       );
     } catch (error) {
       console.error(error);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 413) {
+          alert(error.response?.data.message || "");
+        }
+      }
     } finally {
       handleState("enviada", false);
       navigate(-1);
@@ -458,6 +464,7 @@ export const DetalleCotizacion = () => {
                         name=""
                         className="h-full w-full opacity-0 cursor-pointer"
                         type="file"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.bmp,.webp,image/*"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           const maxSizeInBytes = 4 * 1024 * 1024;
@@ -564,10 +571,6 @@ export const DetalleCotizacion = () => {
               onChange={(e) => {
                 setTotalAmount(Number(e.target.value));
               }}
-              // onChange={(e) => {
-              //   console.log(e.target.value);
-              //   setTotalAmount(Number(e.target.value));
-              // }}
               value={totalAmount || ""}
             />
           </div>

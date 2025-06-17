@@ -17,6 +17,8 @@ import { Home } from "./pages/Home";
 import { AdminUsers } from "./pages/AdminUsers";
 import { DetalleAdminUser } from "./pages/DetalleAdminUser";
 import { NuevoUsuario } from "./pages/NuevoUsuario";
+import { BannersFromm } from "./pages/BannersFromm";
+import { DetalleBannersFromm } from "./pages/DetalleBannersFromm";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,8 @@ export const router = createBrowserRouter([
       { path: "/clientes/:id", element: <HistorialCliente /> },
       { path: "/servicios", element: <ServicioTecnico /> },
       { path: "/servicios/:id", element: <DetalleServicio /> },
+      { path: "/banners", element: <BannersFromm /> },
+      { path: "/banners/:id", element: <DetalleBannersFromm /> },
       { path: "*", element: <Navigate to="/" /> },
     ],
   },

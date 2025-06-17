@@ -56,6 +56,13 @@ export const superAdminMenu: NavMenu[] = [
     iconWhite: "/icons/adminUsersW.svg",
     link: "/usuarios",
   },
+  {
+    id: 8,
+    name: "Banners Fromm",
+    icon: "/icons/banners.svg",
+    iconWhite: "/icons/bannersW.svg",
+    link: "/banners",
+  },
 ];
 
 export const navMenu: NavMenu[] = [
@@ -100,6 +107,13 @@ export const navMenu: NavMenu[] = [
     icon: "/icons/chart.svg",
     iconWhite: "/icons/chartW.svg",
     link: "/resultados",
+  },
+  {
+    id: 7,
+    name: "Banners Fromm",
+    icon: "/icons/banners.svg",
+    iconWhite: "/icons/bannersW.svg",
+    link: "/banners",
   },
 ];
 
