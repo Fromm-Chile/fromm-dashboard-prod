@@ -103,6 +103,10 @@ export const DetalleServicio = () => {
                       <strong>Empresa:</strong>{" "}
                       {contacto.company || "No registrada"}
                     </p>
+                    <p className="text-gray-700">
+                      <strong>Equipo:</strong>{" "}
+                      {contacto.equipment || "No registrado"}
+                    </p>
                     <p
                       className={`p-2 rounded-lg text-center w-fit text-white mt-2 ${
                         contacto.status.name === "PENDIENTE"
