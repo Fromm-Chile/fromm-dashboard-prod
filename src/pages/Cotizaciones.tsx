@@ -18,10 +18,6 @@ const opcionesSelect = [
   { id: "PERDIDA", texto: "Perdida", value: "PERDIDA" },
 ];
 
-type Cotizacion = {
-  id: number;
-};
-
 export const Cotizaciones = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState("");
@@ -57,43 +53,46 @@ export const Cotizaciones = () => {
     setSearchParams({ page: page.toString(), limit: limit.toString() });
   }, [page, limit, setSearchParams]);
 
-  const { data: { cotizaciones = [], totalPages = 1 } = {}, isLoading } =
-    useQuery<{ cotizaciones: Cotizacion[]; totalPages: number }>({
-      queryKey: [
-        "cotizaciones",
-        debouncedSearch,
-        filter,
-        limit,
-        page - 1,
-        columnOrder,
-      ],
-      queryFn: async () => {
-        try {
-          const { data } = await axios.get(`${apiUrl}/admin/invoices`, {
-            params: {
-              countryCode,
-              name: debouncedSearch,
-              status: filter,
-              limit: Number(limit),
-              page: page - 1,
-              idOrder: columnOrder ? "asc" : "desc",
-            },
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          });
-          return data;
-        } catch (error) {
-          if (error instanceof AxiosError && error.status === 401) {
-            navigate("/login");
-          } else {
-            console.error("Unexpected error:", error);
-          }
-          return [];
+  const {
+    data: { cotizaciones = [], totalCount: totalPages = 1 } = {},
+    isLoading,
+  } = useQuery({
+    queryKey: [
+      "cotizaciones",
+      debouncedSearch,
+      filter,
+      limit,
+      page - 1,
+      columnOrder,
+    ],
+    queryFn: async () => {
+      try {
+        const { data } = await axios.get(`${apiUrl}/admin/invoices`, {
+          params: {
+            countryCode,
+            name: debouncedSearch,
+            status: filter,
+            limit: Number(limit),
+            page: page - 1,
+            idOrder: columnOrder ? "asc" : "desc",
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        console.log(data);
+        return data;
+      } catch (error) {
+        if (error instanceof AxiosError && error.status === 401) {
+          navigate("/login");
+        } else {
+          console.error("Unexpected error:", error);
         }
-      },
-      staleTime: 5 * 60 * 1000,
-    });
+        return [];
+      }
+    },
+    // staleTime: 5 * 60 * 1000,
+  });
 
   const { data: { totalCount, pendingInvoices, sendInvoices } = {} } = useQuery(
     {
