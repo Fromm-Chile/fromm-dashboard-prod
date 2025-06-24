@@ -56,7 +56,7 @@ export const Clientes = () => {
         return [];
       }
     },
-    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

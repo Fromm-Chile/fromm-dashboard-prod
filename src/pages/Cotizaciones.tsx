@@ -91,7 +91,7 @@ export const Cotizaciones = () => {
         return [];
       }
     },
-    // staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: { totalCount, pendingInvoices, sendInvoices } = {} } = useQuery(

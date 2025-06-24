@@ -87,7 +87,7 @@ export const ServicioTecnico = () => {
           return [];
         }
       },
-      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
     }
   );
 
