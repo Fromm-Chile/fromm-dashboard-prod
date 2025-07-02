@@ -60,6 +60,8 @@ export const DetalleCotizacion = () => {
     refetchOnWindowFocus: false,
   });
 
+  console.log(cotizacion);
+
   const navigate = useNavigate();
 
   const handleClick = (value: string) => {
@@ -267,6 +269,8 @@ export const DetalleCotizacion = () => {
                               { value: "enviada", texto: "ENVIADA" },
                               { value: "derivada", texto: "DERIVADA" },
                             ]
+                          : cotizacion.statusR.name === "VENDIDO"
+                          ? [{ value: "perdida", texto: "PERDIDA" }]
                           : [
                               { value: "enviada", texto: "ENVIADA" },
                               { value: "seguimiento", texto: "SEGUIMIENTO" },
