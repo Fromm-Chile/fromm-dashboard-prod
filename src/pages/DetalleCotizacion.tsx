@@ -26,6 +26,7 @@ export const DetalleCotizacion = () => {
       agregarSeguimiento: false,
       vendido: false,
       perdida: false,
+      editarMonto: false,
     },
     (_, isOpen) => {
       if (!isOpen) {
@@ -44,9 +45,13 @@ export const DetalleCotizacion = () => {
 
   useEffect(() => {
     setError(null);
-  }, [comment]);
+  }, [comment, totalAmount]);
 
-  const { data: cotizacion = {}, isLoading } = useQuery({
+  const {
+    data: cotizacion = {},
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["cotizacion", id],
     queryFn: async () => {
       const { data } = await axios.get(`${apiUrl}/admin/invoices/${id}`, {
@@ -59,8 +64,6 @@ export const DetalleCotizacion = () => {
     },
     refetchOnWindowFocus: false,
   });
-
-  console.log(cotizacion);
 
   const navigate = useNavigate();
 
@@ -130,8 +133,6 @@ export const DetalleCotizacion = () => {
       return;
     }
 
-    // console.log(totalAmount);
-    // return;
     try {
       setModalLoader(true);
       await axios.put(
@@ -198,6 +199,31 @@ export const DetalleCotizacion = () => {
     }
   };
 
+  const handleUpdateAmount = async () => {
+    if (!totalAmount) {
+      setError("El nuevo monto es requerido!");
+      return;
+    }
+    try {
+      setModalLoader(true);
+      await axios.put(
+        `${apiUrl}/admin/invoices/new/amount`,
+        { id, totalAmount, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleState("editarMonto", false);
+      refetch();
+      setModalLoader(false);
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -254,10 +280,24 @@ export const DetalleCotizacion = () => {
                     <strong>{cotizacion.statusR.name}</strong>
                   </p>
                   {cotizacion.statusR.name === "VENDIDO" && (
-                    <p className="text-gray-700 text-2xl">
-                      <strong>Monto neto de la venta:</strong> USD{" "}
-                      {formatAsUSD(cotizacion.totalAmount)}
-                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <p className="text-gray-700 text-2xl">
+                        <strong>Monto neto de la venta:</strong> USD{" "}
+                        {formatAsUSD(cotizacion.totalAmount)}
+                      </p>
+                      <div className="relative group">
+                        <img
+                          src="/icons/edit.svg"
+                          width={40}
+                          height={40}
+                          className="cursor-pointer hover:opacity-50"
+                          onClick={() => handleState("editarMonto", true)}
+                        />
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                          Editar monto
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
                 <div>
@@ -577,6 +617,9 @@ export const DetalleCotizacion = () => {
               }}
               value={totalAmount || ""}
             />
+            {error && (
+              <p className="text-red-400 font-bold text-small mt-2">{error}</p>
+            )}
           </div>
         </ModalConfirmacion>
       )}
@@ -595,6 +638,39 @@ export const DetalleCotizacion = () => {
           onSubmit={handleStatusPerdido}
           titleComment="Ingresa el motivo de la perdida*"
         ></ModalConfirmacion>
+      )}
+      {initialState.editarMonto && (
+        <ModalConfirmacion
+          isLoading={modalLoader}
+          setValue={setComment}
+          isOpen={initialState.editarMonto}
+          onCancel={() => handleState("editarMonto", false)}
+          text={
+            <p>
+              Actialización del <strong>monto</strong> de la venta!
+            </p>
+          }
+          onSubmit={handleUpdateAmount}
+          titleComment="Comentario (opcional)"
+        >
+          <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
+            <label htmlFor="" className="self-start mb-1">
+              Ingresa el nuevo monto de la venta en{" "}
+              <strong>dólares americanos (USD)</strong>.
+            </label>
+            <input
+              type="number"
+              className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500"
+              onChange={(e) => {
+                setTotalAmount(Number(e.target.value));
+              }}
+              value={totalAmount || ""}
+            />
+            {error && (
+              <p className="text-red-400 font-bold text-small mt-2">{error}</p>
+            )}
+          </div>
+        </ModalConfirmacion>
       )}
     </>
   );

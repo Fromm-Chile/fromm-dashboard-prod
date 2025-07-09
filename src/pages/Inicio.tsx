@@ -11,7 +11,7 @@ import { Line } from "@/components/Line";
 import { Barras } from "@/components/Bar";
 
 type Invoices = {
-  createdAt: Date;
+  updatedAt: Date;
   totalCount: number;
   totalAmountSum: number;
 };
@@ -55,7 +55,7 @@ export const Inicio = () => {
       );
 
       const filteredInvoices = data?.invoices.map((invoice: Invoices) => ({
-        createdAt: new Date(invoice.createdAt),
+        updatedAt: new Date(invoice.updatedAt),
         totalCount: invoice.totalCount,
         totalAmountSum: invoice.totalAmountSum,
       }));

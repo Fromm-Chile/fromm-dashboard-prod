@@ -29,7 +29,7 @@ export const DetalleBannersFromm = () => {
   const { data: banner, isLoading } = useQuery({
     queryKey: ["banner", id],
     queryFn: async (): Promise<Banner> => {
-      const { data } = await axios.get(`${apiUrl}/banners/${id}`, {
+      const { data } = await axios.get(`${apiUrl}/admin/banners/${id}`, {
         params: { id },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -49,7 +49,7 @@ export const DetalleBannersFromm = () => {
     try {
       setModalLoader(true);
       await axios.put(
-        `${apiUrl}/banners/order`,
+        `${apiUrl}/admin/banners/order`,
         { id, order },
         {
           headers: {
@@ -75,7 +75,7 @@ export const DetalleBannersFromm = () => {
     try {
       setModalLoader(true);
       await axios.put(
-        `${apiUrl}/banners/remove`,
+        `${apiUrl}/admin/banners/remove`,
         { id },
         {
           headers: {
@@ -101,7 +101,7 @@ export const DetalleBannersFromm = () => {
     try {
       setModalLoader(true);
       await axios.put(
-        `${apiUrl}/banners/activate`,
+        `${apiUrl}/admin/banners/activate`,
         { id },
         {
           headers: {

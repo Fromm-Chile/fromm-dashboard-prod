@@ -40,7 +40,7 @@ export function Line({ chartData }: any) {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="createdAt"
+              dataKey="updatedAt"
               tickLine={false}
               axisLine={false}
               tickMargin={8}

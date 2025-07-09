@@ -28,7 +28,7 @@ export const BannersFromm = () => {
     queryKey: ["bannersFromm"],
     queryFn: async (): Promise<Banner[]> => {
       try {
-        const { data } = await axios.get(`${apiUrl}/banners`, {
+        const { data } = await axios.get(`${apiUrl}/admin/banners`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
@@ -128,8 +128,6 @@ export const BannersFromm = () => {
       setModalLoader(false);
     }
   };
-
-  console.log(file);
 
   return (
     <>

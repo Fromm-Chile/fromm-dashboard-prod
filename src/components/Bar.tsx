@@ -41,7 +41,7 @@ export function Barras({ chartData }: any) {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="createdAt"
+              dataKey="updatedAt"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
