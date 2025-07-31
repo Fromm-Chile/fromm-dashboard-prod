@@ -143,7 +143,7 @@ export const NuevoUsuario = () => {
         </div>
       </div>
       <ModalConfirmacion
-        text="Estás segura de crear una nueva cotización?"
+        text="Estás segura de crear el nuevo usuario?"
         isOpen={modal}
         onSubmit={handleSubmit(onSubmit)}
         onCancel={() => setModal(false)}
