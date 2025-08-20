@@ -9,10 +9,10 @@ import { useNavigate, useSearchParams } from "react-router";
 
 export const Clientes = () => {
   const [search, setSearch] = useState("");
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState(10);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("page");
-  const [page, setPage] = useState<number>(Number(query) || 1);
+  const [page, setPage] = useState(Number(query) || 1);
   const [columnOrder, setColumnOrder] = useState(false);
   const { countryCode } = useUserStore();
 

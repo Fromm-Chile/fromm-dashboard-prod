@@ -15,7 +15,7 @@ export const DetalleCotizacion = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [comment, setComment] = useState<string>("");
+  const [comment, setComment] = useState("");
   const [totalAmount, setTotalAmount] = useState<number | null>(null);
   const [modalLoader, setModalLoader] = useState(false);
   const [initialState, handleState] = useModalStates(
@@ -221,6 +221,45 @@ export const DetalleCotizacion = () => {
       handleState("editarMonto", false);
       refetch();
       setModalLoader(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const maxSizeInBytes = 4 * 1024 * 1024;
+
+    // Define allowed file types
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/gif",
+      "image/bmp",
+      "image/webp",
+    ];
+
+    if (file) {
+      // Check if file type is allowed
+      if (!allowedTypes.includes(file.type)) {
+        alert(
+          "Formato de archivo no permitido. Solo se aceptan: PDF, Word (.doc, .docx), Excel (.xls, .xlsx) e imágenes (PNG, JPG, JPEG, GIF, BMP, WEBP)"
+        );
+        e.target.value = "";
+        return;
+      }
+
+      // Check file size
+      if (file.size > maxSizeInBytes) {
+        alert("Documento no debe exceder los 4 MB!");
+        e.target.value = "";
+      } else {
+        setFile(file);
+      }
     }
   };
 
@@ -509,18 +548,7 @@ export const DetalleCotizacion = () => {
                         className="h-full w-full opacity-0 cursor-pointer"
                         type="file"
                         accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.bmp,.webp,image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          const maxSizeInBytes = 4 * 1024 * 1024;
-                          if (file) {
-                            if (file.size > maxSizeInBytes) {
-                              alert("Documento no debe exceder los 4 MB!");
-                              e.target.value = "";
-                            } else {
-                              setFile(file);
-                            }
-                          }
-                        }}
+                        onChange={handleFileUpload}
                       />
                     </div>
                   </div>

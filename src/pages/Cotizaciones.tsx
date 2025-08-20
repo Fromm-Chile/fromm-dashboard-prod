@@ -23,10 +23,10 @@ export const Cotizaciones = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string | null>(null);
   const querylimit = searchParams.get("limit");
-  const [limit, setLimit] = useState<number>(Number(querylimit) || 10);
+  const [limit, setLimit] = useState(Number(querylimit) || 10);
   const [columnOrder, setColumnOrder] = useState(false);
   const query = searchParams.get("page");
-  const [page, setPage] = useState<number>(Number(query) || 1);
+  const [page, setPage] = useState(Number(query) || 1);
   const navigate = useNavigate();
   const { countryCode, user = {} } = useUserStore();
 

@@ -12,8 +12,8 @@ import { useUserStore } from "../store/useUserStore";
 export const DetalleContacto = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
   const [modalLoader, setModalLoader] = useState(false);
-  const [department, setDepartment] = useState<string>("");
-  const [otro, setOtro] = useState<string>("");
+  const [department, setDepartment] = useState("");
+  const [otro, setOtro] = useState("");
   const [initialState, handleState] = useModalStates(
     {
       derivada: false,

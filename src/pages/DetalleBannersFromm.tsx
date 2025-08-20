@@ -16,7 +16,7 @@ export const DetalleBannersFromm = () => {
     activar: false,
   });
   const [modalLoader, setModalLoader] = useState(false);
-  const [order, setOrder] = useState<number>(0);
+  const [order, setOrder] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   const { id } = useParams();

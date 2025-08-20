@@ -17,10 +17,10 @@ const opcionesSelect = [
 export const ServicioTecnico = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string | null>(null);
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState(10);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("page");
-  const [page, setPage] = useState<number>(Number(query) || 1);
+  const [page, setPage] = useState(Number(query) || 1);
   const [columnOrder, setColumnOrder] = useState(false);
   const { countryCode } = useUserStore();
 

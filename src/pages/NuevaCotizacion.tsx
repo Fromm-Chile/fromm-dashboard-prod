@@ -13,6 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router";
 import { Button } from "../components/Button";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
+import { useUserStore } from "@/store/useUserStore";
 
 type UserSearch = {
   id: number;
@@ -31,10 +32,12 @@ const schema = yup.object().shape({
 });
 
 export const NuevaCotizacion = () => {
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState("");
   const [selectedUser, setSelectedUser] = useState<UserSearch | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
+
+  const { countryCode } = useUserStore();
 
   const navigate = useNavigate();
 
@@ -75,7 +78,7 @@ export const NuevaCotizacion = () => {
         const { data }: { data: UserSearch[] } = await axios.get(
           `${apiUrl}/admin/users/email`,
           {
-            params: { countryCode: "CL", email: debouncedSearch },
+            params: { countryCode, email: debouncedSearch },
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
@@ -120,6 +123,7 @@ export const NuevaCotizacion = () => {
         {
           userId: selectedUser ? selectedUser.id : null,
           ...data,
+          countryId: countryCode === "CL" ? 1 : 2,
         },
         {
           headers: {
