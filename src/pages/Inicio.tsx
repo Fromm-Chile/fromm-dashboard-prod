@@ -136,7 +136,7 @@ export const Inicio = () => {
           {isLoading && <Loader />}
           <Summary
             total={cotizacionesTotales}
-            enviada={montoTotal}
+            enviada={montoTotal.toFixed(2)}
             pendiente={cotizacionesVendidas}
             tituloEnviada="Monto Total USD"
             tituloPendiente="Cotizaciones Vendidas"
