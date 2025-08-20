@@ -80,7 +80,6 @@ export const Cotizaciones = () => {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
-        console.log(data);
         return data;
       } catch (error) {
         if (error instanceof AxiosError && error.status === 401) {

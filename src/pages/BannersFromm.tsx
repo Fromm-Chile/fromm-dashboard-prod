@@ -1,6 +1,7 @@
 import { apiUrl } from "@/assets/variables";
 import { ModalConfirmacion } from "@/components/ModalConfirmacion";
 import { Table } from "@/components/Table";
+import { useUserStore } from "@/store/useUserStore";
 import { Banner } from "@/types/bannersTypes";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -15,6 +16,8 @@ export const BannersFromm = () => {
   const [order, setOrder] = useState(0);
 
   const navigate = useNavigate();
+
+  const { countryCode } = useUserStore();
 
   useEffect(() => {
     setError(null);
@@ -36,7 +39,7 @@ export const BannersFromm = () => {
         return data;
       } catch (error) {
         if (error instanceof AxiosError && error.status === 401) {
-          navigate("/login");
+          alert("No autorizado!");
         } else {
           console.error("Unexpected error:", error);
         }
@@ -144,6 +147,7 @@ export const BannersFromm = () => {
                 setFile(null);
                 setError(null);
               }}
+              disabled={countryCode !== "CL"}
             >
               SUBIR BANNER
             </button>

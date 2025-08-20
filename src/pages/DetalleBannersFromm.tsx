@@ -59,9 +59,13 @@ export const DetalleBannersFromm = () => {
       );
     } catch (error) {
       console.error(error);
+      console.log(error);
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 413) {
           alert(error.response?.data.message || "");
+        }
+        if (error.response?.status === 401) {
+          alert("No autorizado");
         }
       }
     } finally {
