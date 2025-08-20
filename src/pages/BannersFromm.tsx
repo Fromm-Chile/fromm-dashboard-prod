@@ -135,7 +135,7 @@ export const BannersFromm = () => {
         <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
           <div className="mb-6 flex justify-between items-center">
             <h1 className="text-2xl font-medium text-center">
-              Banners promocionales de FROMM
+              Banners promocionales de FROMM (Sólo Chile)
             </h1>
             <button
               className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
