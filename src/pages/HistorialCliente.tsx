@@ -73,6 +73,11 @@ export const HistorialCliente = () => {
                     contacts[0]?.company ||
                     "No disponible"}
                 </p>
+                {invoices[0]?.user.rucPeru && (
+                  <p className="text-gray-700">
+                    <strong>RUC:</strong> {invoices[0]?.user.rucPeru}
+                  </p>
+                )}
               </div>
             </div>
           </div>

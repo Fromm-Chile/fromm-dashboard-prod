@@ -412,6 +412,11 @@ export const DetalleCotizacion = () => {
                       <strong>Empresa:</strong>{" "}
                       {cotizacion.user?.company || "No registrada"}
                     </p>
+                    {cotizacion.user?.rucPeru && (
+                      <p className="text-gray-700">
+                        <strong>RUC:</strong> {cotizacion.user?.rucPeru}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div>
