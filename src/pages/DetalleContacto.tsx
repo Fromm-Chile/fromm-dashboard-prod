@@ -63,6 +63,7 @@ export const DetalleContacto = () => {
             name: contacto.name,
             phone: contacto.phone,
             company: contacto.company,
+            rucPeru: contacto.user.rucPeru,
             message: contacto.message,
             countryId: contacto.user.contryId,
           },
@@ -125,8 +126,6 @@ export const DetalleContacto = () => {
     }
   };
 
-  console.log(department);
-
   return (
     <>
       {isLoading ? (
@@ -174,6 +173,11 @@ export const DetalleContacto = () => {
                       <strong>Empresa:</strong>{" "}
                       {contacto.company || "No registrada"}
                     </p>
+                    {contacto.user.rucPeru && (
+                      <p className="text-gray-700">
+                        <strong>RUC:</strong> {contacto.user.rucPeru}
+                      </p>
+                    )}
                     <p
                       className={`p-2 rounded-lg text-center w-fit text-white mt-2 ${
                         contacto.status.name === "PENDIENTE"

@@ -35,6 +35,9 @@ export const BannersFromm = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
+          params: {
+            countryId: countryCode === "CL" ? 1 : 2,
+          },
         });
         return data;
       } catch (error) {
@@ -109,7 +112,7 @@ export const BannersFromm = () => {
       setModalLoader(true);
       await axios.post(
         `${apiUrl}/files/upload`,
-        { file, order },
+        { file, order, countryId: countryCode === "CL" ? 1 : 2 },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -138,7 +141,7 @@ export const BannersFromm = () => {
         <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
           <div className="mb-6 flex justify-between items-center">
             <h1 className="text-2xl font-medium text-center">
-              Banners promocionales de FROMM (Sólo Chile)
+              Banners promocionales de FROMM
             </h1>
             <button
               className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
@@ -147,7 +150,6 @@ export const BannersFromm = () => {
                 setFile(null);
                 setError(null);
               }}
-              disabled={countryCode !== "CL"}
             >
               SUBIR BANNER
             </button>
