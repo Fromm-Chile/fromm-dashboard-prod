@@ -27,7 +27,8 @@ const schema = yup.object().shape({
   name: yup.string().required("Nombre es requerido"),
   email: yup.string().email().required("Correo es requerido"),
   phone: yup.string(),
-  company: yup.string().required("El nombre de la empresa es requerido"),
+  company: yup.string().required("Empresa es requerida"),
+  ruc: yup.string(),
   message: yup.string().required("Mensaje es requerido"),
 });
 
@@ -53,6 +54,7 @@ export const NuevaCotizacion = () => {
       email: "",
       phone: "",
       company: "",
+      ruc: "",
       message: "",
     },
   });
@@ -123,6 +125,7 @@ export const NuevaCotizacion = () => {
         {
           userId: selectedUser ? selectedUser.id : null,
           ...data,
+          rucPeru: data.ruc || null,
           countryId: countryCode === "CL" ? 1 : 2,
         },
         {
@@ -219,6 +222,15 @@ export const NuevaCotizacion = () => {
               disabled={selectedUser ? true : false}
             />
           </div>
+          {countryCode === "PE" && (
+            <InputController
+              control={control}
+              name="ruc"
+              placeholder="RUC"
+              className="w-[50%]"
+              disabled={selectedUser ? true : false}
+            />
+          )}
           <TextareaController
             control={control}
             name="message"

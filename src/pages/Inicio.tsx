@@ -9,6 +9,7 @@ import { Loader } from "../components/Loader";
 import { Button } from "../components/Button";
 import { Line } from "@/components/Line";
 import { Barras } from "@/components/Bar";
+import * as XLSX from "xlsx";
 
 type Invoices = {
   updatedAt: Date;
@@ -98,6 +99,65 @@ export const Inicio = () => {
     refetchData(); // Trigger the "montos-fecha" query
   };
 
+  const handleDownloadCombined = async () => {
+    try {
+      const [invoicesResponse, productsResponse] = await Promise.all([
+        axios.get(`${apiUrl}/admin/invoices/excel/data`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }),
+        axios.get(`${apiUrl}/admin/invoices/excel/data/products`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }),
+      ]);
+
+      const invoicesData = invoicesResponse.data.map((item: any) => ({
+        numeroCotizacion: item.id,
+        fechaSolicitud: new Date(item.createdAt).toLocaleDateString("es-ES"),
+        cliente: item.user.company,
+        estatus: item.statusR.name,
+        montoVenta: item.totalAmount || 0,
+        fechaActualizacion: new Date(item.updatedAt).toLocaleDateString(
+          "es-ES"
+        ),
+        productosSolicitados: item.invoiceDetails
+          .map((producto: any) => [
+            producto.name,
+            ` cantidad: ${producto.quantity}`,
+          ])
+          .join(", "),
+      }));
+
+      const productsData = productsResponse.data.map((item: any) => ({
+        numeroCotizacion: item.invoiceId,
+        producto: item.name,
+        cantidadSolicitada: item.quantity,
+        categoria: item.product.category.name,
+      }));
+
+      const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+      const invoicesWorksheet: XLSX.WorkSheet =
+        XLSX.utils.json_to_sheet(invoicesData);
+      const productsWorksheet: XLSX.WorkSheet =
+        XLSX.utils.json_to_sheet(productsData);
+      XLSX.utils.book_append_sheet(workbook, invoicesWorksheet, "Cotizaciones");
+      XLSX.utils.book_append_sheet(workbook, productsWorksheet, "Productos");
+
+      const currentDate = new Date()
+        .toLocaleDateString("es-ES")
+        .replace(/\//g, "-");
+      const fileName = `Reporte-Completo-${currentDate}.xlsx`;
+
+      XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+      console.error("Error downloading combined report:", error);
+      alert("Error al descargar el reporte. Inténtalo nuevamente.");
+    }
+  };
+
   return (
     <>
       <div>
@@ -156,6 +216,11 @@ export const Inicio = () => {
             </div>
           )}
         </div>
+      </div>
+      <div className="w-full flex justify-end">
+        <Button link="" onClick={handleDownloadCombined}>
+          Descargar Reporte Completo
+        </Button>
       </div>
     </>
   );
