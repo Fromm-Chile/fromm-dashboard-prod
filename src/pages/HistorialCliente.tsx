@@ -24,8 +24,6 @@ export const HistorialCliente = () => {
     refetchOnWindowFocus: false,
   });
 
-  console.log(invoices);
-
   return (
     <>
       {isLoading && <Loader />}
