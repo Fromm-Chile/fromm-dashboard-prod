@@ -3,6 +3,7 @@ import { Table } from "@/components/Table";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router";
+import { Plus } from "lucide-react";
 
 export const AdminUsers = () => {
   const navigate = useNavigate();
@@ -65,29 +66,33 @@ export const AdminUsers = () => {
   ];
 
   return (
-    <>
-      <div className="pb-10 pt-10">
-        <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
-          <div className="mb-6 flex justify-between items-center">
-            <h1 className="text-2xl font-medium text-center">
-              Usuarios del Panel Admistrativo
+    <div className="pb-10 pt-4">
+      <div className="w-full bg-card border border-border rounded-2xl shadow-sm p-7 mb-12">
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">
+              Usuarios del Panel Administrativo
             </h1>
-            <button
-              className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
-              onClick={() => navigate("/nuevo-usuario")}
-            >
-              CREAR USUARIO
-            </button>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {adminUsers.length} usuarios registrados
+            </p>
           </div>
-
-          <Table
-            datosTabla={adminUsers}
-            columns={columns}
-            detailsRoute="usuarios"
-            isLoading={isLoading}
-          />
+          <button
+            className="flex items-center gap-2 cursor-pointer bg-red-500 hover:bg-red-600 rounded-xl text-white px-4 py-2.5 text-sm font-semibold transition-colors shadow-sm"
+            onClick={() => navigate("/nuevo-usuario")}
+          >
+            <Plus size={16} />
+            Crear usuario
+          </button>
         </div>
+
+        <Table
+          datosTabla={adminUsers}
+          columns={columns}
+          detailsRoute="usuarios"
+          isLoading={isLoading}
+        />
       </div>
-    </>
+    </div>
   );
 };

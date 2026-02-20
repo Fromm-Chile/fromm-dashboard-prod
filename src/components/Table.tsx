@@ -40,17 +40,17 @@ export const Table = ({
   });
 
   return (
-    <div className="relative">
+    <div className="relative rounded-xl overflow-hidden border border-border">
       {isLoading && <Loader />}
-      <table className="w-full relative">
-        <thead className="cursor-pointer">
+      <table className="w-full">
+        <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <tr key={headerGroup.id} className="bg-muted/60">
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
                   onClick={handlerColumnFilter}
-                  className="p-6 text-left text-gray-500 font-bold text-md bg-gray-100 uppercase"
+                  className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors select-none"
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -61,17 +61,17 @@ export const Table = ({
             </tr>
           ))}
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-border">
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
               onClick={() => navigate(`/${detailsRoute}/${row.original.id}`)}
-              className="cursor-pointer hover:bg-gray-100/50 transition-all"
+              className="cursor-pointer bg-card hover:bg-muted/40 transition-colors duration-150"
             >
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className="py-2 px-6 border-b border-gray-200"
+                  className="py-3 px-5 text-sm text-foreground"
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
@@ -81,8 +81,8 @@ export const Table = ({
         </tbody>
       </table>
       {table.getPageCount() === 0 && (
-        <div className="flex justify-center items-center h-28">
-          <p>No se encontraron resultados...</p>
+        <div className="flex flex-col justify-center items-center h-32 gap-2 bg-card">
+          <p className="text-sm text-muted-foreground">No se encontraron resultados</p>
         </div>
       )}
     </div>

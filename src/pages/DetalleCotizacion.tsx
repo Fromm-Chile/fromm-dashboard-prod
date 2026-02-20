@@ -10,6 +10,7 @@ import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
 import { formatAsUSD } from "../assets/helperFunctions";
 import { useUserStore } from "../store/useUserStore";
+import { ChevronLeft } from "lucide-react";
 
 export const DetalleCotizacion = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
@@ -269,29 +270,27 @@ export const DetalleCotizacion = () => {
         <Loader />
       ) : (
         <>
-          <div className="mt-5 flex items-center gap-2 text-lg">
-            <img src="/icons/left-arrow.svg" width={15} height={15} />
-            <button
-              className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate(-1)}
-            >
-              Volver
-            </button>
-          </div>
-          <h1 className="text-3xl font-bold text-red-500 pb-4 mt-2 mb-4">
+          <button
+  className="mt-5 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-4"
+  onClick={() => navigate(-1)}
+>
+  <ChevronLeft size={16} />
+  Volver
+</button>
+          <h1 className="text-2xl font-bold text-foreground pb-4 mt-2 mb-4">
             Detalle de Cotización
           </h1>
-          <div className="w-full max-w-[1150px] mx-auto bg-white shadow-lg rounded-lg p-6">
+          <div className="w-full bg-card border border-border rounded-2xl shadow-sm p-7 mb-12">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Información General
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg flex justify-between items-center">
+              <div className="bg-muted/40 border border-border rounded-xl p-4 flex justify-between items-center">
                 <div className="flex flex-col pr-10">
-                  <p className="text-gray-700">
+                  <p className="text-foreground">
                     <strong>Cotización #{cotizacion.id}</strong>
                   </p>
-                  <p className="text-gray-700">
+                  <p className="text-foreground">
                     <strong>Fecha de creación:</strong>{" "}
                     {cotizacion.createdAt
                       ? new Date(cotizacion.createdAt).toLocaleDateString(
@@ -320,7 +319,7 @@ export const DetalleCotizacion = () => {
                   </p>
                   {cotizacion.statusR.name === "VENDIDO" && (
                     <div className="flex items-center gap-2 mt-2">
-                      <p className="text-gray-700 text-2xl">
+                      <p className="text-foreground text-2xl">
                         <strong>Monto neto de la venta:</strong> USD{" "}
                         {formatAsUSD(cotizacion.totalAmount)}
                       </p>
@@ -367,7 +366,7 @@ export const DetalleCotizacion = () => {
                   )}
                   {cotizacion.statusR.name === "PENDIENTE" ||
                   cotizacion.statusR.name === "DERIVADA" ? null : (
-                    <div className="mt-2 flex gap-2 justify-center text-green-500 font-bold border border-gray-200 bg-white rounded-lg p-2 hover:bg-gray-100 hover:text-green-600">
+                    <div className="mt-2 flex gap-2 justify-center text-green-500 font-bold border border-border bg-card rounded-lg p-2 hover:bg-muted hover:text-green-600">
                       <a target="_blank" href={cotizacion.invoiceURL}>
                         VER COTIZACIÓN
                       </a>
@@ -388,39 +387,39 @@ export const DetalleCotizacion = () => {
               </div>
             </div>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Información del Usuario
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg ">
+              <div className="bg-muted/40 border border-border rounded-xl p-4 ">
                 <div className="flex gap-20 mb-5">
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Nombre:</strong>{" "}
                       {cotizacion.user?.name || "No disponible"}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Email:</strong>{" "}
                       {cotizacion.user?.email || "No disponible"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Teléfono:</strong>{" "}
                       {cotizacion.user?.phone || "No registrado"}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Empresa:</strong>{" "}
                       {cotizacion.user?.company || "No registrada"}
                     </p>
                     {cotizacion.user?.rucPeru && (
-                      <p className="text-gray-700">
+                      <p className="text-foreground">
                         <strong>RUC:</strong> {cotizacion.user?.rucPeru}
                       </p>
                     )}
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-700">
+                  <p className="text-foreground">
                     <strong>Mensaje:</strong>{" "}
                     {cotizacion?.message || "Sin mensaje."}
                   </p>
@@ -429,27 +428,24 @@ export const DetalleCotizacion = () => {
             </div>
             {cotizacion.invoiceDetails?.length > 0 && (
               <div>
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">
+                <h2 className="text-xl font-semibold text-foreground mb-2">
                   Detalles de la Solicitud
                 </h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                    <thead className="bg-gray-200 text-gray-700">
+                <div className="rounded-xl overflow-hidden border border-border">
+                  <table className="min-w-full bg-card">
+                    <thead className="bg-muted/60">
                       <tr>
-                        <th className="px-4 py-2 text-left">Código</th>
-                        <th className="px-4 py-2 text-left">Producto</th>
-                        <th className="px-4 py-2 text-left">Cantidad</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Código</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cantidad</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-border">
                       {cotizacion.invoiceDetails?.map((detail: any) => (
-                        <tr
-                          key={detail.id}
-                          className="border-t border-gray-200"
-                        >
-                          <td className="px-4 py-2">{detail.id}</td>
-                          <td className="px-4 py-2">{detail.name}</td>
-                          <td className="px-4 py-2">{detail.quantity}</td>
+                        <tr key={detail.id} className="bg-card hover:bg-muted/40 transition-colors">
+                          <td className="px-4 py-3 text-sm text-foreground">{detail.id}</td>
+                          <td className="px-4 py-3 text-sm text-foreground">{detail.name}</td>
+                          <td className="px-4 py-3 text-sm text-foreground">{detail.quantity}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -458,30 +454,30 @@ export const DetalleCotizacion = () => {
               </div>
             )}
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2 mt-5">
+              <h2 className="text-xl font-semibold text-foreground mb-2 mt-5">
                 Historial solicitud
               </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                  <thead className="bg-gray-200 text-gray-700">
+              <div className="rounded-xl overflow-hidden border border-border">
+                <table className="min-w-full bg-card">
+                  <thead className="bg-muted/60">
                     <tr>
-                      <th className="px-4 py-2 text-left">Estado</th>
-                      <th className="px-4 py-2 text-left">Comentario</th>
-                      <th className="px-4 py-2 text-left">Realizado por</th>
-                      <th className="px-4 py-2 text-left">Fecha</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Comentario</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Realizado por</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-border">
                     {cotizacion?.invoiceEvents.map((event: any) => (
-                      <tr key={event.id} className="border-t border-gray-200">
-                        <td className="px-4 py-2">{event.status}</td>
-                        <td className="px-4 py-2">
+                      <tr key={event.id} className="bg-card hover:bg-muted/40 transition-colors">
+                        <td className="px-4 py-3 text-sm text-foreground">{event.status}</td>
+                        <td className="px-4 py-3 text-sm text-foreground">
                           {event.comment || "Sin comentario"}
                         </td>
-                        <td className="px-4 py-2">
+                        <td className="px-4 py-3 text-sm text-foreground">
                           {event.adminUser?.name || "Cliente"}
                         </td>
-                        <td className="px-4 py-2">
+                        <td className="px-4 py-3 text-sm text-foreground">
                           {event.createdAt
                             ? new Date(event.createdAt).toLocaleDateString(
                                 "es-ES",
@@ -518,7 +514,7 @@ export const DetalleCotizacion = () => {
         >
           {file ? (
             <div className="h-48 rounded-lg border-2 border-gray-300 bg-gray-50 flex flex-col justify-center px-3 mt-3 items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
-              <p className="text-gray-700 mb-2">
+              <p className="text-foreground mb-2">
                 <strong>Archivo seleccionado:</strong>
               </p>
               <p>{file.name}</p>
@@ -541,7 +537,7 @@ export const DetalleCotizacion = () => {
                           className="mb-3"
                           src="https://img.icons8.com/dusk/64/000000/file.png"
                         />
-                        <span className="block text-gray-500 font-semibold">
+                        <span className="block text-muted-foreground font-semibold">
                           Arrastra &amp; suelta tu cotización aquí
                         </span>
                         <span className="block text-gray-400 font-normal mt-1">

@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { ChevronLeft } from "lucide-react";
 
 export const DetalleBannersFromm = () => {
   const [initialState, handleState] = useModalStates({
@@ -133,32 +134,30 @@ export const DetalleBannersFromm = () => {
         <Loader />
       ) : (
         <>
-          <div className="mt-5 mb-5 flex items-center gap-2 text-lg pb-2">
-            <img src="/icons/left-arrow.svg" width={15} height={15} />
-            <button
-              className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate("/banners")}
-            >
-              Volver
-            </button>
-          </div>
-          <div className="max-w-[1150px] mx-auto bg-white shadow-lg rounded-lg p-6">
-            <h1 className="text-3xl font-bold text-red-500 pb-4 mt-2 mb-4">
+          <button
+  className="mt-5 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-4"
+  onClick={() => navigate("/banners")}
+>
+  <ChevronLeft size={16} />
+  Volver
+</button>
+          <div className="w-full bg-card border border-border rounded-2xl shadow-sm p-7 mb-12">
+            <h1 className="text-2xl font-bold text-foreground pb-4 mt-2 mb-4">
               Detalles Banner
             </h1>
             <div className="mb-6">
-              <div className="bg-gray-100 p-4 rounded-lg flex justify-center">
+              <div className="bg-muted/40 border border-border rounded-xl p-4 flex justify-center">
                 <div className="flex gap-10 flex-col">
                   <div className="flex gap-10 justify-around">
                     <div className="flex flex-col gap-2">
                       <div className="flex gap-5">
                         <div>
-                          <p className="text-gray-700">
+                          <p className="text-foreground">
                             <strong>Nombre:</strong> {banner?.name}
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-700">
+                          <p className="text-foreground">
                             <strong>Ultima modificación:</strong>{" "}
                             {new Date(
                               banner?.updatedAt || ""
@@ -171,7 +170,7 @@ export const DetalleBannersFromm = () => {
                         </div>
                       </div>
                       <div>
-                        <p className="text-gray-700">
+                        <p className="text-foreground">
                           <strong>Url:</strong> {banner?.url}
                         </p>
                       </div>

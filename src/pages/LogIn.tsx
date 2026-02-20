@@ -73,98 +73,117 @@ export const LogIn = () => {
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <div className="flex items-center justify-center h-screen bg-background">
+          <Loader />
+        </div>
       ) : (
-        <div className="flex items-center justify-center h-screen bg-gradient-to-r from-[#F5F5F5] to-[#EAEAEA]">
-          <div className="rounded-xl bg-white w-[400px] h-[500px]">
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-              <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="flex h-screen bg-background">
+          {/* Left panel */}
+          <div className="hidden lg:flex flex-col justify-between w-[420px] bg-[var(--sidebar)] px-10 py-12 shrink-0">
+            <div>
+              <img
+                src="/FrommLogo.webp"
+                className="h-7 w-auto object-contain brightness-0 invert"
+                alt="Fromm"
+              />
+            </div>
+            <div>
+              <blockquote className="text-gray-300 text-lg font-light leading-relaxed">
+                "Gestiona cotizaciones, contactos y servicios técnicos desde un
+                solo lugar."
+              </blockquote>
+              <p className="text-gray-500 text-sm mt-3">Panel administrativo Fromm</p>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-2 h-2 rounded-full bg-red-500" />
+              <div className="w-2 h-2 rounded-full bg-gray-600" />
+              <div className="w-2 h-2 rounded-full bg-gray-700" />
+            </div>
+          </div>
+
+          {/* Right panel */}
+          <div className="flex-1 flex items-center justify-center px-8">
+            <div className="w-full max-w-sm">
+              {/* Mobile logo */}
+              <div className="lg:hidden mb-10 text-center">
                 <img
-                  alt="Your Company"
                   src="/FrommLogo.webp"
-                  className="mx-auto h-10 w-auto"
+                  className="h-9 w-auto mx-auto"
+                  alt="Fromm"
                 />
-                <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                  Ingresa al sistema administrativo
-                </h2>
               </div>
 
-              <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form action="#" method="POST" className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm/6 font-medium text-gray-900"
-                    >
-                      Correo Electrónico
+              <div className="mb-8">
+                <h1 className="text-2xl font-bold text-foreground mb-2">
+                  Bienvenido
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  Ingresa tus credenciales para acceder al sistema
+                </p>
+              </div>
+
+              <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-foreground">
+                    Correo electrónico
+                  </label>
+                  <InputController
+                    name="email"
+                    control={control}
+                    type="email"
+                    placeholder="tu@empresa.com"
+                    error={errors.email?.message || ""}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-sm font-medium text-foreground">
+                      Contraseña
                     </label>
-                    <InputController
-                      name="email"
-                      control={control}
-                      type="email"
-                      error={errors.email?.message || ""}
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <label
-                        htmlFor="password"
-                        className="block text-sm/6 font-medium text-gray-900"
-                      >
-                        Contraseña
-                      </label>
-                      <div className="text-sm">
-                        <a
-                          href="#"
-                          className="font-semibold text-red-600 hover:text-red-500"
-                          onClick={() => setPasswordModal(true)}
-                        >
-                          Olvidaste tu contraseña?
-                        </a>
-                      </div>
-                    </div>
-                    <div className="mt-2">
-                      <InputController
-                        name="password"
-                        control={control}
-                        type="password"
-                        error={errors.password?.message || ""}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <button
-                      type="submit"
-                      className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
-                      onClick={handleSubmit(handleSignIn)}
+                    <a
+                      href="#"
+                      className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors"
+                      onClick={() => setPasswordModal(true)}
                     >
-                      Ingresar
-                    </button>
+                      ¿Olvidaste tu contraseña?
+                    </a>
                   </div>
-                </form>
-              </div>
+                  <InputController
+                    name="password"
+                    control={control}
+                    type="password"
+                    placeholder="••••••••"
+                    error={errors.password?.message || ""}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors duration-200 cursor-pointer shadow-sm mt-2"
+                  onClick={handleSubmit(handleSignIn)}
+                >
+                  Ingresar al sistema
+                </button>
+              </form>
             </div>
           </div>
         </div>
       )}
       {passwordModal && (
         <ModalConfirmacion
-          // error={error || ""}
-          // isLoading={modalLoader}
           isOpen={passwordModal}
           onCancel={() => setPasswordModal(false)}
           text={
             <p>
-              Debes solicitar una nueva contraseña al administrador general!
+              Debes solicitar una nueva contraseña al administrador general.
             </p>
           }
           onSubmit={async () => {
             setPasswordModal(false);
           }}
           hasComment={false}
-        ></ModalConfirmacion>
+        />
       )}
     </>
   );
