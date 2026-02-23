@@ -8,6 +8,7 @@ import { useModalStates } from "../hooks/useModalStates";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { Button } from "../components/Button";
 import { useUserStore } from "../store/useUserStore";
+import { ChevronLeft } from "lucide-react";
 
 export const DetalleServicio = () => {
   const [modalLoader, setModalLoader] = useState(false);
@@ -62,48 +63,46 @@ export const DetalleServicio = () => {
         <Loader />
       ) : (
         <>
-          <div className="mt-5 flex items-center gap-2 text-lg pb2">
-            <img src="/icons/left-arrow.svg" width={15} height={15} />
-            <button
-              className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate(-1)}
-            >
-              Volver
-            </button>
-          </div>
-          <h1 className="text-3xl font-bold text-red-500 pb-4 mt-2 mb-4">
+          <button
+  className="mt-5 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-4"
+  onClick={() => navigate(-1)}
+>
+  <ChevronLeft size={16} />
+  Volver
+</button>
+          <h1 className="text-2xl font-bold text-foreground pb-4 mt-2 mb-4">
             Detalle del Servicio Técnico
           </h1>
-          <div className="w-full max-w-[1150px] mx-auto bg-white shadow-lg rounded-lg p-6">
+          <div className="w-full bg-card border border-border rounded-2xl shadow-sm p-7 mb-12">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Información del Contacto
               </h2>
-              <div className="flex justify-between items-center mb-4 bg-gray-100 p-4 rounded-lg ">
+              <div className="flex justify-between items-center mb-4 bg-muted/40 border border-border rounded-xl p-4 ">
                 <div className="flex gap-5">
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Contacto:</strong> #{contacto.id}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Nombre:</strong>{" "}
                       {contacto.name || "No disponible"}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Email:</strong>{" "}
                       {contacto.email || "No disponible"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Teléfono:</strong>{" "}
                       {contacto.phone || "No registrado"}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Empresa:</strong>{" "}
                       {contacto.company || "No registrada"}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Equipo:</strong>{" "}
                       {contacto.equipment || "No registrado"}
                     </p>
@@ -135,33 +134,33 @@ export const DetalleServicio = () => {
               </div>
             </div>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Mensaje
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg">
-                <p className="text-gray-700 whitespace-pre-line">
+              <div className="bg-muted/40 border border-border rounded-xl p-4">
+                <p className="text-foreground whitespace-pre-line">
                   {contacto.message || "No hay mensaje disponible."}
                 </p>
               </div>
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Información Adicional
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg flex gap-10">
+              <div className="bg-muted/40 border border-border rounded-xl p-4 flex gap-10">
                 {contacto.status === "SERVICE" && (
-                  <p className="text-gray-700">
+                  <p className="text-foreground">
                     <strong>Equipo:</strong>{" "}
                     {contacto.equipment || "No especificado"}
                   </p>
                 )}
-                <p className="text-gray-700">
+                <p className="text-foreground">
                   <strong>Fecha de Creación:</strong>{" "}
                   {contacto.createdAt
                     ? new Date(contacto.createdAt).toLocaleDateString("es-ES")
                     : "No disponible"}
                 </p>
-                <p className="text-gray-700">
+                <p className="text-foreground">
                   <strong>Última Actualización:</strong>{" "}
                   {contacto.updatedAt
                     ? new Date(contacto.updatedAt).toLocaleDateString("es-ES")
@@ -185,7 +184,7 @@ export const DetalleServicio = () => {
               titleComment="Comentario (opcional)"
             >
               <div>
-                <p className="text-gray-700 text-center">
+                <p className="text-foreground text-center">
                   Esta seguro de finalizar el servicio?
                 </p>
               </div>

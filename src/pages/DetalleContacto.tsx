@@ -8,6 +8,7 @@ import { useModalStates } from "../hooks/useModalStates";
 import { useState } from "react";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { useUserStore } from "../store/useUserStore";
+import { ChevronLeft } from "lucide-react";
 
 export const DetalleContacto = () => {
   const [estatus, setEstatus] = useState<string | null>(null);
@@ -132,65 +133,63 @@ export const DetalleContacto = () => {
         <Loader />
       ) : (
         <>
-          <div className="mt-5 flex items-center gap-2 text-lg pb2">
-            <img src="/icons/left-arrow.svg" width={15} height={15} />
-            <button
-              className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate(-1)}
-            >
-              Volver
-            </button>
-          </div>
-          <h1 className="text-3xl font-bold text-red-500 pb-4 mt-2 mb-4">
+          <button
+            className="mt-5 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-4"
+            onClick={() => navigate(-1)}
+          >
+            <ChevronLeft size={16} />
+            Volver
+          </button>
+          <h1 className="text-2xl font-bold text-foreground pb-2 mb-5">
             Detalle del Contacto
           </h1>
-          <div className="w-full max-w-[1150px] mx-auto bg-white shadow-lg rounded-lg p-6">
+          <div className="w-full max-w-[1150px] mx-auto bg-card border border-border shadow-sm rounded-2xl p-6">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-base font-semibold text-foreground mb-3">
                 Información del Contacto
               </h2>
-              <div className="flex justify-between items-center mb-4 bg-gray-100 p-4 rounded-lg ">
-                <div className="flex gap-5">
-                  <div>
-                    <p className="text-gray-700">
-                      <strong>Contacto:</strong> #{contacto.id}
+              <div className="flex justify-between items-start mb-4 bg-muted/40 p-4 rounded-xl border border-border">
+                <div className="flex gap-8">
+                  <div className="space-y-1">
+                    <p className="text-sm text-foreground">
+                      <span className="text-muted-foreground font-medium">Contacto:</span> #{contacto.id}
                     </p>
-                    <p className="text-gray-700">
-                      <strong>Nombre:</strong>{" "}
+                    <p className="text-sm text-foreground">
+                      <span className="text-muted-foreground font-medium">Nombre:</span>{" "}
                       {contacto.name || "No disponible"}
                     </p>
-                    <p className="text-gray-700">
-                      <strong>Email:</strong>{" "}
+                    <p className="text-sm text-foreground">
+                      <span className="text-muted-foreground font-medium">Email:</span>{" "}
                       {contacto.email || "No disponible"}
                     </p>
                   </div>
-                  <div>
-                    <p className="text-gray-700">
-                      <strong>Teléfono:</strong>{" "}
+                  <div className="space-y-1">
+                    <p className="text-sm text-foreground">
+                      <span className="text-muted-foreground font-medium">Teléfono:</span>{" "}
                       {contacto.phone || "No registrado"}
                     </p>
-                    <p className="text-gray-700">
-                      <strong>Empresa:</strong>{" "}
+                    <p className="text-sm text-foreground">
+                      <span className="text-muted-foreground font-medium">Empresa:</span>{" "}
                       {contacto.company || "No registrada"}
                     </p>
                     {contacto.user.rucPeru && (
-                      <p className="text-gray-700">
-                        <strong>RUC:</strong> {contacto.user.rucPeru}
+                      <p className="text-sm text-foreground">
+                        <span className="text-muted-foreground font-medium">RUC:</span> {contacto.user.rucPeru}
                       </p>
                     )}
-                    <p
-                      className={`p-2 rounded-lg text-center w-fit text-white mt-2 ${
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white mt-1 ${
                         contacto.status.name === "PENDIENTE"
-                          ? "bg-gray-400 "
+                          ? "bg-gray-400"
                           : contacto.status.name === "COTIZACIÓN"
-                          ? "bg-green-400"
+                          ? "bg-emerald-500"
                           : contacto.status.name === "DERIVADA"
-                          ? "bg-blue-600"
+                          ? "bg-blue-500"
                           : ""
                       }`}
                     >
-                      <strong>{contacto.status.name}</strong>
-                    </p>
+                      {contacto.status.name}
+                    </span>
                   </div>
                 </div>
                 <div>
@@ -216,34 +215,34 @@ export const DetalleContacto = () => {
               </div>
             </div>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-base font-semibold text-foreground mb-3">
                 Mensaje
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg">
-                <p className="text-gray-700 whitespace-pre-line">
+              <div className="bg-muted/40 p-4 rounded-xl border border-border">
+                <p className="text-sm text-foreground whitespace-pre-line">
                   {contacto.message || "No hay mensaje disponible."}
                 </p>
               </div>
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-base font-semibold text-foreground mb-3">
                 Información Adicional
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg flex gap-10">
+              <div className="bg-muted/40 p-4 rounded-xl border border-border flex gap-10">
                 {contacto.status === "SERVICE" && (
-                  <p className="text-gray-700">
-                    <strong>Equipo:</strong>{" "}
+                  <p className="text-sm text-foreground">
+                    <span className="text-muted-foreground font-medium">Equipo:</span>{" "}
                     {contacto.equipment || "No especificado"}
                   </p>
                 )}
-                <p className="text-gray-700">
-                  <strong>Fecha de Creación:</strong>{" "}
+                <p className="text-sm text-foreground">
+                  <span className="text-muted-foreground font-medium">Fecha de Creación:</span>{" "}
                   {contacto.createdAt
                     ? new Date(contacto.createdAt).toLocaleDateString("es-ES")
                     : "No disponible"}
                 </p>
-                <p className="text-gray-700">
-                  <strong>Última Actualización:</strong>{" "}
+                <p className="text-sm text-foreground">
+                  <span className="text-muted-foreground font-medium">Última Actualización:</span>{" "}
                   {contacto.updatedAt
                     ? new Date(contacto.updatedAt).toLocaleDateString("es-ES")
                     : "No disponible"}
@@ -259,20 +258,17 @@ export const DetalleContacto = () => {
               onCancel={() => handleState("derivada", false)}
               text={
                 <p>
-                  Cambar estado a <strong>DERIVADA</strong>
+                  Cambiar estado a <strong>DERIVADA</strong>
                 </p>
               }
               onSubmit={handleStatusDerivado}
               titleComment="Comentario (opcional)"
             >
-              <div className="w-[80%] mx-auto mt-5 mb-2">
+              <div className="w-full mt-2 mb-2">
                 <SelectTable
-                  label="Selecciona el area"
+                  label="Selecciona el área"
                   selectOptions={[
-                    {
-                      value: "Gerencia Comercial",
-                      texto: "Gerencia Comercial",
-                    },
+                    { value: "Gerencia Comercial", texto: "Gerencia Comercial" },
                     { value: "Compras", texto: "Compras" },
                     { value: "Recursos Humanos", texto: "Recursos Humanos" },
                     { value: "Comex", texto: "Comex" },
@@ -286,7 +282,7 @@ export const DetalleContacto = () => {
                   <input
                     type="text"
                     placeholder="Especifica el área"
-                    className="border border-gray-300 p-2 w-full rounded-md focus-visible:outline-none focus-visible:border-red-500 mt-2"
+                    className="border border-input bg-background text-foreground px-3 py-2.5 w-full rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all mt-2"
                     onChange={(e) => {
                       department === "Otro" && setOtro(e.target.value);
                     }}
@@ -304,14 +300,14 @@ export const DetalleContacto = () => {
               onCancel={() => handleState("cotizado", false)}
               text={
                 <p>
-                  Cambar estado a <strong>COTIZADO</strong>
+                  Cambiar estado a <strong>COTIZADO</strong>
                 </p>
               }
               onSubmit={handleStatusCotizado}
             >
               <div>
-                <p className="text-gray-700 text-center">
-                  Estas seguro que quires crear un{" "}
+                <p className="text-sm text-foreground text-center">
+                  ¿Estás seguro que quieres crear una{" "}
                   <strong>nueva cotización</strong> a partir de la información
                   de este mensaje?
                 </p>
@@ -326,15 +322,15 @@ export const DetalleContacto = () => {
               onCancel={() => handleState("servicio", false)}
               text={
                 <p>
-                  Cambar estado a <strong>SERVICIO</strong>
+                  Cambiar estado a <strong>SERVICIO</strong>
                 </p>
               }
               onSubmit={handleStatusServicio}
               titleComment="Comentario (opcional)"
             >
               <div>
-                <p className="text-gray-700 text-center">
-                  Estas seguro que quires mover este mensaje a{" "}
+                <p className="text-sm text-foreground text-center">
+                  ¿Estás seguro que quieres mover este mensaje a{" "}
                   <strong>servicio técnico</strong>?
                 </p>
               </div>

@@ -1,4 +1,5 @@
 import { JSX, PropsWithChildren } from "react";
+import { AlertTriangle } from "lucide-react";
 import { Loader } from "./Loader";
 
 type ModalConfirmacionProps = {
@@ -34,38 +35,38 @@ export const ModalConfirmacion = ({
       ) : (
         <>
           {isOpen && (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black/30 bg-opacity-50 text-gray-600">
-              <div className="flex flex-col justify-center h-auto w-[510px] overflow-y-auto overflow-x-hidden">
-                <div className="bg-white rounded-lg h-full w-full border-2 border-red-900 flex flex-col items-center justify-center min-h-[274px] py-5">
-                  <img src="/icons/alert.svg" width={70} className="mb-5" />
-                  {text}
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black/40 backdrop-blur-sm text-foreground">
+              <div className="flex flex-col justify-center h-auto w-[480px] overflow-y-auto overflow-x-hidden">
+                <div className="bg-card rounded-2xl h-full w-full shadow-2xl border border-border flex flex-col items-center justify-center min-h-[280px] py-7 px-8 gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center">
+                    <AlertTriangle size={24} className="text-red-500" strokeWidth={2} />
+                  </div>
+                  <div className="text-center text-sm text-foreground">{text}</div>
                   {children}
                   {hasComment && (
-                    <>
-                      <div className="flex flex-col items-center justify-center mt-5 w-[80%]">
-                        <label htmlFor="" className="self-start mb-1">
-                          {titleComment}
-                        </label>
-                        <textarea
-                          onChange={(e) => setValue && setValue(e.target.value)}
-                          className="border border-gray-300 p-2 w-[100%] rounded-md focus-visible:outline-none focus-visible:border-red-500"
-                        />
-                      </div>
-                      <p className="text-red-400 font-bold text-base">
-                        {error}
-                      </p>
-                    </>
+                    <div className="flex flex-col w-full gap-1.5">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        {titleComment}
+                      </label>
+                      <textarea
+                        onChange={(e) => setValue && setValue(e.target.value)}
+                        className="border border-input bg-background text-foreground placeholder:text-muted-foreground px-3 py-2.5 w-full rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none h-24"
+                      />
+                      {error && (
+                        <p className="text-red-500 text-xs font-medium">{error}</p>
+                      )}
+                    </div>
                   )}
-                  <div className="flex gap-5">
+                  <div className="flex gap-3 mt-2">
                     <button
-                      className="bg-red-500 text-white rounded-lg px-4 py-2 mt-4 cursor-pointer hover:bg-red-600"
+                      className="bg-red-500 text-white rounded-xl px-5 py-2.5 text-sm font-semibold cursor-pointer hover:bg-red-600 transition-colors"
                       onClick={onSubmit}
                       disabled={isLoading}
                     >
                       {buttonText}
                     </button>
                     <button
-                      className="bg-gray-300 text-gray-700 rounded-lg px-4 py-2 mt-4 cursor-pointer hover:bg-gray-400"
+                      className="border border-border bg-background text-foreground rounded-xl px-5 py-2.5 text-sm font-medium cursor-pointer hover:bg-muted transition-colors"
                       onClick={onCancel}
                     >
                       Cancelar

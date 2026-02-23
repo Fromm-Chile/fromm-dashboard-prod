@@ -31,10 +31,10 @@ export const InputController = ({
             value={field.value || ""}
             onChange={field.onChange}
             placeholder={placeholder}
-            className="w-full border border-gray-300 p-2 rounded-lg focus-visible:border-red-500 focus-visible:outline-none"
+            className="w-full border border-input bg-background text-foreground placeholder:text-muted-foreground px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             disabled={disabled}
           />
-          <p className="text-red-500 text-xs font-semibold">{error}</p>
+          <p className="text-red-500 text-xs font-medium mt-1">{error}</p>
         </div>
       )}
     />

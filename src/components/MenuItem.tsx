@@ -1,48 +1,52 @@
 import { NavLink } from "react-router";
+import { NavMenu } from "@/assets/menuData";
 
 type MenuItemProps = {
-  menuData: {
-    id: number;
-    name: string;
-    icon: string;
-    iconWhite?: string;
-    link: string;
-  }[];
+  menuData: NavMenu[];
   isOpen: boolean;
 };
 
 export const MenuItem = ({ menuData, isOpen }: MenuItemProps) => {
   return (
-    <div>
-      {menuData.map((item) => (
-        <NavLink
-          to={item.link}
-          end={item.link === "/"}
-          className="group"
-          key={item.id}
-        >
-          {({ isActive }) => (
-            <div className="flex gap-5 items-center mb-2 group-[.active]:background-red-100 group-[.active]:border-2 group-[.active]:border-red-500 group-[.active]:bg-red-500 group-[.active]:text-white p-2 rounded-lg transition-all duration-300 text-gray-600">
-              {isOpen ? (
-                <div className="flex gap-3 pl-3 w-full items-center">
-                  <img
-                    src={isActive ? item.iconWhite : item.icon}
-                    height={30}
-                    width={30}
-                  />
-                  <p className="font-medium">{item.name}</p>
-                </div>
-              ) : (
-                <img
-                  src={isActive ? item.iconWhite : item.icon}
-                  height={30}
-                  width={30}
+    <nav className="flex flex-col gap-1">
+      {menuData.map((item) => {
+        const Icon = item.icon;
+        return (
+          <NavLink
+            to={item.link}
+            end={item.link === "/"}
+            key={item.id}
+            className="group"
+          >
+            {({ isActive }) => (
+              <div
+                title={!isOpen ? item.name : undefined}
+                className={`flex gap-3 items-center px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? "bg-red-500/10 text-red-500 font-semibold"
+                    : "text-[var(--sidebar-foreground)] opacity-60 hover:opacity-100 hover:bg-[var(--sidebar-accent)]"
+                } ${!isOpen ? "justify-center" : ""}`}
+              >
+                <Icon
+                  size={20}
+                  strokeWidth={isActive ? 2.5 : 2}
+                  className={`shrink-0 transition-colors ${
+                    isActive ? "text-red-500" : ""
+                  }`}
                 />
-              )}
-            </div>
-          )}
-        </NavLink>
-      ))}
-    </div>
+                {isOpen && (
+                  <span className="text-sm font-medium leading-none">
+                    {item.name}
+                  </span>
+                )}
+                {isOpen && isActive && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-red-400" />
+                )}
+              </div>
+            )}
+          </NavLink>
+        );
+      })}
+    </nav>
   );
 };

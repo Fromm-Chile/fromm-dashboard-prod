@@ -203,10 +203,10 @@ export const Inicio = () => {
           />
           {filteredInvoices.length > 0 ? (
             <div className="flex gap-4 pb-10">
-              <div className="bg-white p-1 rounded-2xl w-[50%]">
+              <div className="bg-card border border-border p-1 rounded-2xl w-[50%]">
                 <Line chartData={filteredInvoices} />
               </div>
-              <div className="bg-white p-1 rounded-2xl w-[50%]">
+              <div className="bg-card border border-border p-1 rounded-2xl w-[50%]">
                 <Barras chartData={filteredInvoices} />
               </div>
             </div>

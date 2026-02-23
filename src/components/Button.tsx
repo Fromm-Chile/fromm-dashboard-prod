@@ -19,11 +19,11 @@ export const Button = ({
     <div className="w-fit m-auto">
       <Link to={link} onClick={onClick}>
         <div
-          className={`p-4 rounded-xl ${
+          className={`px-5 py-2.5 rounded-xl text-sm font-semibold ${
             whiteButton
-              ? "bg-white text-gray-400 hover:bg-red-500 hover:text-white"
-              : "bg-red-500 text-white hover:bg-white hover:text-red-500"
-          } text-lg border-2 hover:border-2 hover:border-red-500 transition-color ease-in-out duration-500 ${className}`}
+              ? "border border-border bg-background text-foreground hover:border-red-500 hover:text-red-500 hover:bg-red-500/5"
+              : "bg-red-500 text-white hover:bg-red-600 shadow-sm"
+          } transition-all ease-in-out duration-200 ${className}`}
         >
           {children}
         </div>

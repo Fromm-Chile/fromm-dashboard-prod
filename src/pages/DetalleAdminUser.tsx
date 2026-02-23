@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import * as yup from "yup";
+import { ChevronLeft } from "lucide-react";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nombre es requerido"),
@@ -115,38 +116,36 @@ export const DetalleAdminUser = () => {
         <Loader />
       ) : (
         <>
-          <div className="mt-5 mb-5 flex items-center gap-2 text-lg pb-2">
-            <img src="/icons/left-arrow.svg" width={15} height={15} />
-            <button
-              className="cursor-pointer hover:text-red-600"
-              onClick={() => navigate("/usuarios")}
-            >
-              Volver
-            </button>
-          </div>
-          <div className="max-w-[1150px] mx-auto bg-white shadow-lg rounded-lg p-6">
-            <h1 className="text-3xl font-bold text-red-500 pb-4 mt-2 mb-4">
+          <button
+  className="mt-5 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-4"
+  onClick={() => navigate("/usuarios")}
+>
+  <ChevronLeft size={16} />
+  Volver
+</button>
+          <div className="w-full bg-card border border-border rounded-2xl shadow-sm p-7 mb-12">
+            <h1 className="text-2xl font-bold text-foreground pb-4 mt-2 mb-4">
               Usuario Administrativo
             </h1>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Información del Usuario
               </h2>
-              <div className="bg-gray-100 p-4 rounded-lg flex justify-between">
+              <div className="bg-muted/40 border border-border rounded-xl p-4 flex justify-between">
                 <div className="flex gap-20 mb-5">
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Nombre:</strong> {filterUser?.name}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Email:</strong> {filterUser?.email}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Role:</strong> {filterUser?.role?.name}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-foreground">
                       <strong>Ultima modificación:</strong>{" "}
                       {new Date(filterUser?.updatedAt).toLocaleDateString(
                         undefined,
@@ -225,11 +224,11 @@ export const DetalleAdminUser = () => {
               render={({ field }) => (
                 <select
                   {...field}
-                  className={`w-[50%] mb-5 border border-gray-300 p-2 rounded-lg focus-visible:border-red-500 focus-visible:outline-none ${
-                    errors.role ? "border-red-500" : "border-gray-300"
+                  className={`w-[50%] mb-5 border rounded-xl px-3 py-2.5 bg-background text-foreground text-sm focus:ring-2 focus:ring-red-500 focus:outline-none transition-all cursor-pointer ${
+                    errors.role ? "border-red-500" : "border-input"
                   }`}
                 >
-                  <option value="" className="text-gray-300">
+                  <option value="" className="text-muted-foreground">
                     Selecciona el Rol...
                   </option>
                   <option value="AdminChile">AdminChile</option>
@@ -255,7 +254,7 @@ export const DetalleAdminUser = () => {
           titleComment="Comentario (opcional)"
         >
           <div>
-            <p className="text-gray-700 text-center">
+            <p className="text-foreground text-center">
               Estas seguro que quires inhabilitar este usuario?
             </p>
           </div>
@@ -272,7 +271,7 @@ export const DetalleAdminUser = () => {
           titleComment="Comentario (opcional)"
         >
           <div>
-            <p className="text-gray-700 text-center">
+            <p className="text-foreground text-center">
               Estas seguro que quires habilitar este usuario?
             </p>
           </div>

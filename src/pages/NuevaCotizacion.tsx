@@ -11,9 +11,10 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router";
-import { Button } from "../components/Button";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
 import { useUserStore } from "@/store/useUserStore";
+import { ChevronLeft } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 type UserSearch = {
   id: number;
@@ -39,6 +40,79 @@ export const NuevaCotizacion = () => {
   const [modal, setModal] = useState(false);
 
   const { countryCode } = useUserStore();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  // react-select no soporta oklch() en estilos JS inline — usar hex/rgb equivalentes
+  // dark card: #1e2535  dark muted: #252d3d  dark bg: #0f172a  dark fg: #f1f5f9  dark muted-fg: #94a3b8
+  // light card: #ffffff  light border: #e2e8f0  light fg: #0f172a  light muted-fg: #64748b
+  const selectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: isDark ? "#1e2535" : "#ffffff",
+      borderColor: state.isFocused ? "#ef4444" : isDark ? "#2d3748" : "#e2e8f0",
+      borderRadius: "0.75rem",
+      boxShadow: state.isFocused ? "0 0 0 2px rgba(239,68,68,0.2)" : "none",
+      minHeight: "42px",
+      "&:hover": { borderColor: "#ef4444" },
+    }),
+    menu: (base: any) => ({
+      ...base,
+      backgroundColor: isDark ? "#1e2535" : "#ffffff",
+      borderRadius: "0.75rem",
+      border: `1px solid ${isDark ? "#2d3748" : "#e2e8f0"}`,
+      boxShadow: "0 8px 30px rgba(0,0,0,0.18)",
+      zIndex: 50,
+    }),
+    menuList: (base: any) => ({
+      ...base,
+      padding: "4px",
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? "#ef4444"
+        : state.isFocused
+        ? isDark ? "#252d3d" : "#f1f5f9"
+        : "transparent",
+      color: state.isSelected ? "#ffffff" : isDark ? "#f1f5f9" : "#0f172a",
+      borderRadius: "0.5rem",
+      cursor: "pointer",
+    }),
+    singleValue: (base: any) => ({
+      ...base,
+      color: isDark ? "#f1f5f9" : "#0f172a",
+    }),
+    input: (base: any) => ({
+      ...base,
+      color: isDark ? "#f1f5f9" : "#0f172a",
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: isDark ? "#94a3b8" : "#64748b",
+    }),
+    indicatorSeparator: (base: any) => ({
+      ...base,
+      backgroundColor: isDark ? "#2d3748" : "#e2e8f0",
+    }),
+    dropdownIndicator: (base: any) => ({
+      ...base,
+      color: isDark ? "#94a3b8" : "#64748b",
+    }),
+    clearIndicator: (base: any) => ({
+      ...base,
+      color: isDark ? "#94a3b8" : "#64748b",
+      "&:hover": { color: "#ef4444" },
+    }),
+    loadingIndicator: (base: any) => ({
+      ...base,
+      color: "#ef4444",
+    }),
+    noOptionsMessage: (base: any) => ({
+      ...base,
+      color: isDark ? "#94a3b8" : "#64748b",
+    }),
+  };
 
   const navigate = useNavigate();
 
@@ -145,81 +219,98 @@ export const NuevaCotizacion = () => {
   return (
     <>
       {isLoading && <Loader />}
-      <div className="m-auto max-w-[1150px] min-h-[600px] bg-white shadow-lg rounded-lg py-6 px-36 my-10">
-        <h1 className="text-center text-2xl my-10 uppercase font-medium text-gray-700">
-          Crear una nueva cotización
-        </h1>
-        <p className="mb-10">
-          Para generar una nueva cotización deberás buscar al usuario en la base
-          de datos usando su <strong>correo electrónico</strong>.
-        </p>
-        <Select
-          options={selectOptions}
-          onInputChange={handleInputChange}
-          onChange={handleChange}
-          isLoading={isFetching}
-          placeholder="Buscar usuario por correo..."
-          isClearable
-          noOptionsMessage={() => (
-            <div
-              onClick={() => {
-                console.log("first");
-                reset({
-                  name: "",
-                  email: "",
-                  phone: "",
-                  company: "",
-                  message: "",
-                }); // Reset the form
-                setSelectedUser(null); // Clear the selected user
-                setInput(""); // Clear the search input
-              }}
-              style={{
-                cursor: "pointer",
-                textAlign: "center",
-              }}
-            >
-              {debouncedSearch.length < 3
-                ? "Escribe al menos 3 caracteres"
-                : "No se encontraron resultados. Haz clic aquí para limpiar el formulario."}
-            </div>
-          )}
-          loadingMessage={() => "Cargando..."}
-        />
-        <div className="md:grid md:grid-cols-1 md:gap-0 my-10 mb-14">
-          <div className="flex w-full gap-5 mb-5">
+      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8">
+      <div className="w-full max-w-2xl bg-card border border-border rounded-2xl shadow-sm p-8 mb-12">
+        {/* Back button */}
+        <button
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-6"
+          onClick={() => navigate("/cotizaciones")}
+        >
+          <ChevronLeft size={16} />
+          Volver
+        </button>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-foreground">Nueva cotización</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Busca al usuario por <strong className="text-foreground">correo electrónico</strong> o ingresa los datos manualmente.
+          </p>
+        </div>
+
+        {/* User search */}
+        <div className="mb-6">
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">
+            Buscar usuario existente
+          </label>
+          <Select
+            options={selectOptions}
+            onInputChange={handleInputChange}
+            onChange={handleChange}
+            isLoading={isFetching}
+            placeholder="Buscar por correo electrónico..."
+            isClearable
+            styles={selectStyles}
+            noOptionsMessage={() => (
+              <div
+                onClick={() => {
+                  reset({ name: "", email: "", phone: "", company: "", message: "" });
+                  setSelectedUser(null);
+                  setInput("");
+                }}
+                style={{ cursor: "pointer", textAlign: "center" }}
+              >
+                {debouncedSearch.length < 3
+                  ? "Escribe al menos 3 caracteres"
+                  : "No se encontraron resultados. Haz clic aquí para limpiar el formulario."}
+              </div>
+            )}
+            loadingMessage={() => "Cargando..."}
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-xs text-muted-foreground uppercase tracking-wider">Datos del cliente</span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+
+        {/* Form fields */}
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-4">
             <InputController
               control={control}
               name="name"
               placeholder="Nombre*"
               error={errors.name?.message}
-              className="w-[50%]"
-              disabled={selectedUser ? true : false}
+              className="flex-1"
+              disabled={!!selectedUser}
             />
             <InputController
               control={control}
               name="email"
               placeholder="Correo*"
               error={errors.email?.message}
-              className="w-[50%]"
-              disabled={selectedUser ? true : false}
+              className="flex-1"
+              disabled={!!selectedUser}
             />
           </div>
-          <div className="flex w-full gap-5 mb-5 flex-1/2">
+          <div className="flex gap-4">
             <InputController
               control={control}
               name="phone"
               placeholder="Teléfono"
-              className="w-[50%]"
-              disabled={selectedUser ? true : false}
+              className="flex-1"
+              disabled={!!selectedUser}
             />
             <InputController
               control={control}
               name="company"
               placeholder="Empresa*"
-              error={errors.name?.message}
-              className="w-[50%]"
-              disabled={selectedUser ? true : false}
+              error={errors.company?.message}
+              className="flex-1"
+              disabled={!!selectedUser}
             />
           </div>
           {countryCode === "PE" && (
@@ -227,35 +318,26 @@ export const NuevaCotizacion = () => {
               control={control}
               name="ruc"
               placeholder="RUC"
-              className="w-[50%]"
-              disabled={selectedUser ? true : false}
+              className="w-1/2"
+              disabled={!!selectedUser}
             />
           )}
           <TextareaController
             control={control}
             name="message"
-            placeholder="Detalles cotización*"
+            placeholder="Detalles de la cotización*"
             error={errors.message?.message}
           />
-          <div className="flex justify-center">
-            <Button
-              className="border border-black rounded-lg p-2 text-textGray font-bold uppercase cursor-pointer"
+          <div className="flex justify-end mt-2">
+            <button
+              className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors shadow-sm cursor-pointer"
               onClick={handleSubmit(() => setModal(true))}
-              link=""
             >
-              CREAR COTIZACIÓN
-            </Button>
+              Crear cotización
+            </button>
           </div>
         </div>
-        <div className="mt-10 flex items-center gap-2 text-lg">
-          <img src="/icons/left-arrow.svg" width={15} height={15} />
-          <button
-            className="cursor-pointer hover:text-red-600"
-            onClick={() => navigate("/cotizaciones")}
-          >
-            Volver
-          </button>
-        </div>
+      </div>
       </div>
       <ModalConfirmacion
         text="Estás segura de crear una nueva cotización?"

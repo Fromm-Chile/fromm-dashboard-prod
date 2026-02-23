@@ -7,8 +7,8 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router";
-import { Button } from "../components/Button";
 import { ModalConfirmacion } from "../components/ModalConfirmacion";
+import { ChevronLeft } from "lucide-react";
 
 // type adminUser = {
 //   id: number;
@@ -65,82 +65,89 @@ export const NuevoUsuario = () => {
   return (
     <>
       {isLoading && <Loader />}
-      <div className="m-auto max-w-[1150px] min-h-[600px] bg-white shadow-lg rounded-lg py-6 px-36 my-10">
-        <h1 className="text-center text-2xl my-10 uppercase font-medium text-gray-700">
-          Crear una nuevo usuario Administrativo
-        </h1>
-        <p className="mb-10">
-          Ingresa los datos del nuevo usuario administrativo. Recuerda que el
-          <strong> correo electrónico</strong> es el que se usará para iniciar
-          sesión en el panel administrativo.
-        </p>
-        <div className="md:grid md:grid-cols-1 md:gap-0 my-10 mb-14">
-          <div className="flex w-full gap-5 mb-5">
+      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8">
+      <div className="w-full max-w-2xl bg-card border border-border rounded-2xl shadow-sm p-8">
+        {/* Back button */}
+        <button
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-6"
+          onClick={() => navigate("/usuarios")}
+        >
+          <ChevronLeft size={16} />
+          Volver
+        </button>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-foreground">Nuevo usuario administrativo</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            El <strong className="text-foreground">correo electrónico</strong> se usará para iniciar sesión en el panel.
+          </p>
+        </div>
+
+        {/* Form fields */}
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-4">
             <InputController
               control={control}
               name="name"
               placeholder="Nombre*"
               error={errors.name?.message}
-              className="w-[50%]"
+              className="flex-1"
             />
             <InputController
               control={control}
               name="email"
               placeholder="Correo*"
               error={errors.email?.message}
-              className="w-[50%]"
+              className="flex-1"
             />
           </div>
-          <div className="flex w-full gap-5 mb-5 flex-1/2">
+          <div className="flex gap-4">
             <InputController
               control={control}
               name="password"
               placeholder="Contraseña*"
               error={errors.password?.message}
-              className="w-[50%]"
+              className="flex-1"
             />
             <Controller
               control={control}
               name="role"
               render={({ field }) => (
-                <select
-                  {...field}
-                  className={`w-[50%] mb-5 border border-gray-300 p-2 rounded-lg focus-visible:border-red-500 focus-visible:outline-none ${
-                    errors.role ? "border-red-500" : "border-gray-300"
-                  }`}
-                >
-                  <option value="" className="text-gray-300">
-                    Selecciona el Rol...
-                  </option>
-                  <option value="AdminChile">AdminChile</option>
-                  <option value="AdminPeru">AdminPeru</option>
-                  <option value="UserChile">UserChile</option>
-                  <option value="UserPeru">UserPeru</option>
-                  <option value="ServicioChile">ServicioChile</option>
-                  <option value="ServicioPeru">ServicioPeru</option>
-                </select>
+                <div className="flex-1 flex flex-col gap-1">
+                  <select
+                    {...field}
+                    className={`w-full border rounded-xl px-3 py-2.5 bg-background text-foreground text-sm focus:ring-2 focus:ring-red-500 focus:outline-none transition-all cursor-pointer ${
+                      errors.role ? "border-red-500" : "border-input"
+                    }`}
+                  >
+                    <option value="" className="text-muted-foreground">
+                      Selecciona el Rol...
+                    </option>
+                    <option value="AdminChile">AdminChile</option>
+                    <option value="AdminPeru">AdminPeru</option>
+                    <option value="UserChile">UserChile</option>
+                    <option value="UserPeru">UserPeru</option>
+                    <option value="ServicioChile">ServicioChile</option>
+                    <option value="ServicioPeru">ServicioPeru</option>
+                  </select>
+                  {errors.role && (
+                    <p className="text-xs text-red-500">{errors.role.message}</p>
+                  )}
+                </div>
               )}
             />
           </div>
-          <div className="flex justify-center">
-            <Button
-              className="border border-black rounded-lg p-2 text-textGray font-bold uppercase cursor-pointer"
+          <div className="flex justify-end mt-2">
+            <button
+              className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors shadow-sm cursor-pointer"
               onClick={handleSubmit(() => setModal(true))}
-              link=""
             >
-              CREAR USUARIO
-            </Button>
+              Crear usuario
+            </button>
           </div>
         </div>
-        <div className="mt-10 flex items-center gap-2 text-lg">
-          <img src="/icons/left-arrow.svg" width={15} height={15} />
-          <button
-            className="cursor-pointer hover:text-red-600"
-            onClick={() => navigate("/usuarios")}
-          >
-            Volver
-          </button>
-        </div>
+      </div>
       </div>
       <ModalConfirmacion
         text="Estás segura de crear el nuevo usuario?"

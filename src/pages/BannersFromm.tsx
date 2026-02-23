@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { Upload } from "lucide-react";
 
 export const BannersFromm = () => {
   const [modalUpload, setModalUpload] = useState(false);
@@ -136,113 +137,100 @@ export const BannersFromm = () => {
   };
 
   return (
-    <>
-      <div className="pb-10 pt-10">
-        <div className="w-full h-auto bg-white rounded-3xl shadow-lg p-8 mb-12 text-gray-600">
-          <div className="mb-6 flex justify-between items-center">
-            <h1 className="text-2xl font-medium text-center">
+    <div className="pb-10 pt-4">
+      <div className="w-full bg-card border border-border rounded-2xl shadow-sm p-7 mb-12">
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">
               Banners promocionales de FROMM
             </h1>
-            <button
-              className="cursor-pointer hover:bg-red-400 bg-red-500 rounded-lg text-white p-4 hover:shadow-lg transition-all"
-              onClick={() => {
-                setModalUpload(true);
-                setFile(null);
-                setError(null);
-              }}
-            >
-              SUBIR BANNER
-            </button>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {banners.length} banners registrados
+            </p>
           </div>
-
-          <Table
-            datosTabla={banners}
-            columns={columns}
-            detailsRoute="banners"
-            isLoading={isLoading}
-          />
+          <button
+            className="flex items-center gap-2 cursor-pointer bg-red-500 hover:bg-red-600 rounded-xl text-white px-4 py-2.5 text-sm font-semibold transition-colors shadow-sm"
+            onClick={() => {
+              setModalUpload(true);
+              setFile(null);
+              setError(null);
+            }}
+          >
+            <Upload size={16} />
+            Subir banner
+          </button>
         </div>
+
+        <Table
+          datosTabla={banners}
+          columns={columns}
+          detailsRoute="banners"
+          isLoading={isLoading}
+        />
       </div>
       {modalUpload && (
         <ModalConfirmacion
           isLoading={modalLoader}
           isOpen={modalUpload}
           onCancel={() => setModalUpload(false)}
-          text={<p>Agregar imágen jpg con un tamaño máximo de 4 MB.</p>}
+          text={<p>Agregar imagen JPG con un tamaño máximo de 4 MB.</p>}
           onSubmit={uploadImageHandler}
           hasComment={false}
         >
           {file ? (
-            <div className="h-48 rounded-lg border-2 border-gray-300 bg-gray-50 flex flex-col justify-center px-3 mt-3 items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
-              <p className="text-gray-700 mb-2">
-                <strong>Archivo seleccionado:</strong>
+            <div className="h-40 rounded-xl border border-border bg-muted/40 flex flex-col justify-center px-3 mt-3 items-center w-full">
+              <p className="text-muted-foreground text-sm mb-1">
+                <strong className="text-foreground">Archivo seleccionado:</strong>
               </p>
-              <p>{file.name}</p>
+              <p className="text-sm text-foreground">{file.name}</p>
               <button
-                className="bg-red-500 text-white rounded-lg px-4 py-2 mt-4 cursor-pointer hover:bg-red-600"
+                className="bg-red-500 text-white rounded-xl px-4 py-2 mt-3 cursor-pointer hover:bg-red-600 text-sm transition-colors"
                 onClick={() => setFile(null)}
               >
                 Cambiar archivo
               </button>
             </div>
           ) : (
-            <>
-              <div className="max-w-md mx-auto rounded-lg overflow-hidden md:max-w-xl">
-                <div className="md:flex">
-                  <div className="w-full p-3">
-                    <div className="relative h-48 rounded-lg border-2 border-gray-300 bg-gray-50 flex justify-center items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                      <div className="absolute flex flex-col items-center">
-                        <img
-                          alt="File Icon"
-                          className="mb-3"
-                          src="https://img.icons8.com/dusk/64/000000/file.png"
-                        />
-                        <span className="block text-gray-500 font-semibold">
-                          Arrastra &amp; suelta tu imágen aquí
-                        </span>
-                        <span className="block text-gray-400 font-normal mt-1">
-                          o haz click para subir
-                        </span>
-                      </div>
-                      <input
-                        name=""
-                        className="h-full w-full opacity-0 cursor-pointer"
-                        type="file"
-                        accept=".jpg,.jpeg"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          const maxSizeInBytes = 4 * 1024 * 1024;
-                          if (file) {
-                            if (file.size > maxSizeInBytes) {
-                              alert("Imágen debe exceder los 4 MB!");
-                              e.target.value = "";
-                            } else {
-                              setFile(file);
-                            }
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* {error && (
-                <p className="text-red-400 font-bold text-base">{error}</p>
-              )} */}
-            </>
+            <div className="relative h-40 rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col justify-center items-center w-full mt-3 hover:bg-muted/40 transition-colors">
+              <Upload size={28} className="text-muted-foreground mb-2" />
+              <span className="text-sm text-foreground font-medium">
+                Arrastra &amp; suelta tu imagen aquí
+              </span>
+              <span className="text-xs text-muted-foreground mt-1">
+                o haz click para subir
+              </span>
+              <input
+                name=""
+                className="absolute h-full w-full opacity-0 cursor-pointer"
+                type="file"
+                accept=".jpg,.jpeg"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  const maxSizeInBytes = 4 * 1024 * 1024;
+                  if (file) {
+                    if (file.size > maxSizeInBytes) {
+                      alert("La imagen no debe exceder los 4 MB.");
+                      e.target.value = "";
+                    } else {
+                      setFile(file);
+                    }
+                  }
+                }}
+              />
+            </div>
           )}
-          <div className="flex items-center justify-between mt-5 w-[50%] mb-5">
-            <label>Posición del banner</label>
+          <div className="flex items-center justify-between mt-4 w-full">
+            <label className="text-sm font-medium text-foreground">Posición del banner</label>
             <input
               type="number"
               value={order || ""}
               onChange={(e) => setOrder(Number(e.target.value))}
-              className="border border-gray-300 py-2 pl-5 rounded-md focus-visible:outline-none focus-visible:border-red-500 w-20"
+              className="border border-input bg-background text-foreground px-3 py-2 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all w-20"
             />
           </div>
-          {error && <p className="text-red-400 font-bold text-base">{error}</p>}
+          {error && <p className="text-red-500 text-xs font-medium mt-2">{error}</p>}
         </ModalConfirmacion>
       )}
-    </>
+    </div>
   );
 };
