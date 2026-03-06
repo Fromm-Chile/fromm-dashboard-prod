@@ -6,7 +6,6 @@ import { useUserStore } from "../store/useUserStore";
 import { InputFecha } from "../components/InputDate";
 import { useState } from "react";
 import { Loader } from "../components/Loader";
-import { Button } from "../components/Button";
 import { Line } from "@/components/Line";
 import { Barras } from "@/components/Bar";
 import * as XLSX from "xlsx";
@@ -25,6 +24,7 @@ export const Inicio = () => {
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const { countryCode } = useUserStore();
 
@@ -100,6 +100,7 @@ export const Inicio = () => {
   };
 
   const handleDownloadCombined = async () => {
+    setIsDownloading(true);
     try {
       const [invoicesResponse, productsResponse] = await Promise.all([
         axios.get(`${apiUrl}/admin/invoices/excel/data`, {
@@ -155,6 +156,8 @@ export const Inicio = () => {
     } catch (error) {
       console.error("Error downloading combined report:", error);
       alert("Error al descargar el reporte. Inténtalo nuevamente.");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -183,13 +186,16 @@ export const Inicio = () => {
             obligatorio
           />
           <div>
-            <Button
-              link=""
-              className="w-[150px] text-center"
+            <button
+              className="w-[150px] px-5 py-2.5 rounded-xl text-sm font-semibold bg-red-500 text-white hover:bg-red-600 shadow-sm transition-all ease-in-out duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               onClick={handleFilter}
+              disabled={isLoading}
             >
+              {isLoading && (
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent" />
+              )}
               Filtrar
-            </Button>
+            </button>
           </div>
         </div>
         <div className="relative">
@@ -218,9 +224,16 @@ export const Inicio = () => {
         </div>
       </div>
       <div className="w-full flex justify-end">
-        <Button link="" onClick={handleDownloadCombined}>
-          Descargar Reporte Completo
-        </Button>
+        <button
+          className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-red-500 text-white hover:bg-red-600 shadow-sm transition-all ease-in-out duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+          onClick={handleDownloadCombined}
+          disabled={isDownloading}
+        >
+          {isDownloading && (
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent" />
+          )}
+          {isDownloading ? "Descargando..." : "Descargar Reporte Completo"}
+        </button>
       </div>
     </>
   );
